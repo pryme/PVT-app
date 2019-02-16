@@ -1,15 +1,4 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import ResponseTimer from './response_timer';
-import Button from './button';
-import TestHeader from './test_header';
-import ProgressBar from './progress_bar';
-import DataTable from './data_table';
-import ErrorBoundary from './error_boundary';
-import DataSummary from './data_summary';
-
-class App extends Component {
+/class PvtTest extends React.Component {
   constructor(props) {
     super(props);
     this.handleStartClick = this.handleStartClick.bind(this);
@@ -86,7 +75,7 @@ class App extends Component {
     switch (this.state.testStage) {
       case "header":
         pane = 
-          <div >
+          <div>
           <TestHeader 
             userName={this.state.userName}
             onNameChange={this.handleNameChange}
@@ -149,5 +138,3 @@ class App extends Component {
     );
   } 
 }
-
-export default App;
