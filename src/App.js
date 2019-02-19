@@ -8,6 +8,7 @@ import ProgressBar from './progress_bar';
 import DataTable from './data_table';
 import ErrorBoundary from './error_boundary';
 import DataSummary from './data_summary';
+import Settings from './settings';
 
 class App extends Component {
   constructor(props) {
@@ -21,13 +22,15 @@ class App extends Component {
     this.rtDoneCB = this.rtDoneCB.bind(this);
     this.state = {
       // stage of PVT test state machine (header, ready, running, done)
-      testStage: "header",  
+      //testStage: "header",  
+      testStage: "test",  // TODO fix manual edit for test
       rtDone: false,  // response timer finished?
       testStart: new Date(),  // mark start of test duration
       results: [],
       testDuration: 300 * 1000,  // milliseconds
       maxInterval: 10,  // seconds, not currently used
       lapseThresh: 500,  // milliseconds; RT > thresh is lapse
+      validThresh: 100,  // milliseconds; RT > thresh is valid
       userName: "Patrick",
       userComment: ""
     };
@@ -86,7 +89,6 @@ class App extends Component {
     switch (this.state.testStage) {
       case "header":
         pane = 
-          <div >
           <TestHeader 
             userName={this.state.userName}
             onNameChange={this.handleNameChange}
@@ -94,7 +96,6 @@ class App extends Component {
             onCommentChange={this.handleCommentChange}
             onSubmit={this.handleHeaderSubmit}
           />
-          </div>;
         break;
       case "ready":
         pane = 
@@ -122,14 +123,13 @@ class App extends Component {
               results={this.state.results}
               lapseThresh={this.state.lapseThresh}
               />
-          <ErrorBoundary>
             <DataSummary 
               results={this.state.results}
               userName={this.state.userName}
               testStart={this.state.testStart}
               lapseThresh={this.state.lapseThresh}
+              validThresh={this.state.validThresh}
               />
-          </ErrorBoundary>
             <div className="controls">
               <Button name="Start Test" onClick={this.handleStartClick}/>
             </div>
@@ -140,9 +140,11 @@ class App extends Component {
     }
   
     return (
-      <div className="pvttest">
+      <div className="App">
+        <h1>Psychomotor Vigilance Test</h1>
+        <h2>Experimental</h2>
         {pane}
-        <div id="reset">
+        <div>
           <Button name="Reset All" onClick={this.handleResetAll}/>
         </div>
       </div>

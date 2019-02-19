@@ -18,16 +18,65 @@ class DataTable extends React.Component {
         });
     }
   }
+
+  generateRows2(array, lapseThresh, cols=5) {
+    // cols is number of cols for table
+    let result = [];
+    if (array.length > 0) {
+      let value = null;
+      let cellClass = null;
+      let rows = Math.ceil(array.length / cols);
+      for (let i=0; i<rows; i++) {
+        let newRow;
+        for (let j=0; j<cols; j++) {
+          let index = i * cols + j;
+          if (index < array.length) {
+            newRow = {newRow} + <td> + {array[index]} + </td>;
+          } else {newRow = {newRow} + <td></td>;}
+        }
+        newRow = <tr> + {newRow} + </tr>;
+        result.push({newRow});
+      }
+    }
+    console.log(result);  // TODO temp
+    return result;
+  }
   
+  toMatrix(arr, width) {
+   return arr.reduce(function(rows, val, idx) {
+     return (idx % width === 0 ? rows.push([val]) : 
+       rows[rows.length - 1].push(val)) && rows;
+   }, []);
+  }
+
   render() {
+    const lapseThresh = this.props.lapseThresh;
+    const results = this.props.results.map(
+      function(item) {
+        let val;
+        item === null ? val = "False start" : val = Number(item);
+        return val;
+      }
+    );
+    // reshape to matrix
+    const mat = this.toMatrix(results, 5);  // false starts already labelled
+    
     try {
-      let rows = this.generateRows();
       return <div className="results">
              <table>
                <caption>Response Time</caption>
                <tbody>
                  <tr><th>Milliseconds</th></tr>  
-                 {rows}
+                {mat.map(
+                  function(row) {
+                    return <tr>
+                      {row.map(function(cell) {
+                        return <td>{cell}</td>;
+                      })}
+                    </tr>;
+                  }
+                )}
+
                </tbody>
              </table>
              </div>;

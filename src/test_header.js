@@ -25,6 +25,7 @@ class TestHeader extends React.Component {
   
   render() {
     return(
+      <div className="TestHeader">
         <form onSubmit={this.handleSubmit}>
           <p>Please enter or update your info below:</p>
           <input 
@@ -46,6 +47,7 @@ class TestHeader extends React.Component {
             value="Proceed to testing"
           />
         </form>
+      </div>
     );          
   }
 }

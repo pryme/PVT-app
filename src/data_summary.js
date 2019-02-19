@@ -5,15 +5,24 @@ class DataSummary extends React.Component {
     super(props);
     this.isNormalRT = this.isNormalRT.bind(this);
     this.isLapseRT = this.isLapseRT.bind(this);
-    this.getTestDuration = this.getTestDuration(this);
+    this.getTestDuration = this.getTestDuration.bind(this);
+    this.meanRT = this.meanRT.bind(this);
+    this.isRT = this.isRT.bind(this);
+    this.isNormalRT = this.isNormalRT.bind(this);
+    this.isLapseRT = this.isLapseRT.bind(this);
+    this.getSum = this.getSum.bind(this);
+    this.medianRT = this.medianRT.bind(this);
+    this.fsCount = this.fsCount.bind(this);
+    this.lapseCount = this.lapseCount.bind(this);
   }
   isRT(item) {  // all reaction times, but not false starts
-    return(typeof(item) === "number");
+    // eliminate RTs less than validThresh
+    return(typeof(item) === "number" && (item > this.props.validThresh));
   }
   isNormalRT(item) {  // check normal reaction time
-    if (typeof(item) === "number") {
-      return( (item > 0) && (item <= this.props.lapseThresh) );
-    } else {return(false);}
+    return(typeof(item) === "number" && 
+      item > this.props.validThresh &&
+      item <= this.props.lapseThresh);
   }
   isLapseRT(item) {  // check lapsed reaction time
     if (typeof(item) === "number") {
@@ -71,12 +80,12 @@ class DataSummary extends React.Component {
                   <th>All</th>
                 </tr>
                 <tr>
-                  <th>Mean response time (ms):</th>
+                  <th>Mean time (ms):</th>
                   <td>{this.meanRT(data, this.isNormalRT)}</td>
                   <td>{this.meanRT(data, this.isRT)}</td>
                 </tr>
                 <tr>
-                  <th>Median response time (ms):</th>
+                  <th>Median time (ms):</th>
                   <td>{this.medianRT(data, this.isNormalRT)}</td>
                   <td>{this.medianRT(data, this.isRT)}</td>
                 </tr>
@@ -100,7 +109,7 @@ class DataSummary extends React.Component {
                 </tr>
                 <tr>
                   <th>Test duration (s):</th>
-                  <td>{this.getTestDuration}</td>
+                  <td>{this.getTestDuration()}</td>
                 </tr>
               </tbody>
             </table>

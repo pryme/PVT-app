@@ -1,6 +1,3 @@
-.App {
-  text-align: center;
-}
 
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
@@ -34,40 +31,9 @@
 /*----==============================---
 ------==============================---*/
 
-* {
-  box-sizing: border-box;
-  font-family: Ubuntu;
-  background-color: #BBBBBB;  
-}
-
-.pvttest {
-  max-width: 500px;  
-}
-
-#response-timer {
-  border: 1px solid green;
-  padding: 10px;
-}
-
 .debug {
   background-color: lemonchiffon;
   padding: 10px 10px 0px 10px;
-}
-
-.stimulus {
-  background-color: lightblue;
-  height: 80px;
-  width: 100%;
-  color: darkred;
-  font-size: 36px;
-  text-align: center;
-  padding: 15px; 
-  display: table;
-}
-
-.stimulus-text {
-  display: table-cell;
-  vertical-align: middle;
 }
 
 .results {
@@ -114,34 +80,6 @@ caption {
 }
 
 
-.controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-}
-
-input[type=submit], input[type=button], button {
-  background-color: green;
-  border: none;
-  font-size: 24px;
-  color: white;
-  padding: 8px 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-  text-align: center;
-}
-
-input[type=text], textarea {
-  font-size: 20px;
-  width: 100%;
-  
-}
-
-#reset {
-  margin: 20px 0px;  
-}
-
 #ready {
   font-size: 24px;
   text-align: center;
@@ -161,6 +99,66 @@ input[type=text], textarea {
   background-color: green;
 }
 
-TestHeader {
-  margin: 25px;
+/*----==============================---
+Refactored below here
+------==============================---*/
+
+* {
+  box-sizing: border-box;
+  font-family: Ubuntu;
+  background-color: #BBBBBB;  
+}
+
+.App {
+  max-width: 500px;  
+  margin: 0px 10px;
+}
+
+.TestHeader {
+  margin: 0px 0px;
+}
+
+input[type=submit], input[type=button], button {
+  background-color: green;
+  border: none;
+  font-size: 24px;
+  color: white;
+  padding: 8px 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  text-align: center;
+}
+
+input[type=text], textarea {
+  font-size: 20px;
+  width: 100%;
+  
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
+
+.stimulus {
+  background-color: lightblue;
+  height: 80px;
+  width: 100%;
+  color: darkred;
+  font-size: 36px;
+  text-align: center;
+  padding: 15px; 
+  display: table;
+}
+
+.stimulus-text {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+#response-timer {
+  border: 1px solid green;
+  padding: 10px;
 }
