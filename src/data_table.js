@@ -9,7 +9,7 @@ class DataTable extends React.Component {
           let content;
           let cellClass;
           if (item === null) {
-            content = "False start"
+            content = "FS"  // false start
           } else {
             content = item;
             if (Number(content) > lapseThresh) {cellClass = "lapse";} 
@@ -54,7 +54,7 @@ class DataTable extends React.Component {
     const results = this.props.results.map(
       function(item) {
         let val;
-        item === null ? val = "False start" : val = Number(item);
+        item === null ? val = "FS" : val = Number(item);
         return val;
       }
     );
@@ -68,10 +68,10 @@ class DataTable extends React.Component {
                <tbody>
                  <tr><th>Milliseconds</th></tr>  
                 {mat.map(
-                  function(row) {
-                    return <tr>
-                      {row.map(function(cell) {
-                        return <td>{cell}</td>;
+                  function(row, idx) {
+                    return <tr key={idx}>
+                      {row.map(function(cell, idx) {
+                        return <td key={idx}>{cell}</td>;
                       })}
                     </tr>;
                   }

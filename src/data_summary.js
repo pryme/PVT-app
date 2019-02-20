@@ -59,6 +59,7 @@ class DataSummary extends React.Component {
     } else {
       result = Math.round((sortedFiltArray[idx] + sortedFiltArray[idx-1]) / 2);
     }
+    if (result === null || isNaN(result)) {result = null;}  // avoid NaN return
     return(result);
   }
   getTestDuration() {

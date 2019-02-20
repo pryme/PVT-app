@@ -20,6 +20,7 @@ class App extends Component {
     this.handleHeaderSubmit = this.handleHeaderSubmit.bind(this);
     this.handleResetAll = this.handleResetAll.bind(this);
     this.rtDoneCB = this.rtDoneCB.bind(this);
+    this.settingsCB = this.settingsCB.bind(this);
     this.state = {
       // stage of PVT test state machine (header, ready, running, done)
       //testStage: "header",  
@@ -27,15 +28,17 @@ class App extends Component {
       rtDone: false,  // response timer finished?
       testStart: new Date(),  // mark start of test duration
       results: [],
-      testDuration: 300 * 1000,  // milliseconds
-      maxInterval: 10,  // seconds, not currently used
-      lapseThresh: 500,  // milliseconds; RT > thresh is lapse
-      validThresh: 100,  // milliseconds; RT > thresh is valid
       userName: "Patrick",
-      userComment: ""
+      userComment: "",
+      settings: {
+        testDuration: 65 * 1000,  // milliseconds
+        maxWait: 10,  // seconds; max delay before stimulus starts
+        validThresh: 100,  // milliseconds; RT > thresh is valid
+        lapseThresh: 500  // milliseconds; RT > thresh is lapse
+      }
     };
   }
-  
+
   handleStartClick() {  // start the test
     this.setState({
       testStage: "running",
@@ -44,7 +47,7 @@ class App extends Component {
       results: []
     });
     this.durationID = setTimeout(  // for test duration
-      () => this.handleStopClick(), this.state.testDuration
+      () => this.handleStopClick(), this.state.settings.testDuration
     );
   }
   
@@ -82,10 +85,15 @@ class App extends Component {
       this.setState({results: newResults});
     }
   }
-  
+ 
+  settingsCB(obj) {
+    this.setState({
+      settings: obj
+    });
+  }
+
   render() {
     let pane;  // what to show
-    
     switch (this.state.testStage) {
       case "header":
         pane = 
@@ -107,8 +115,10 @@ class App extends Component {
         if (!this.state.rtDone) {
           pane = 
             <div>
-            <ResponseTimer cb={this.rtDoneCB}/>
-            <ProgressBar duration={this.state.testDuration} 
+            <ResponseTimer cb={this.rtDoneCB}
+              maxWait={this.state.settings.maxWait}
+            />
+            <ProgressBar duration={this.state.settings.testDuration} 
               start={this.state.testStart}/>
             <div className="controls">
               <Button name="Stop Test" onClick={this.handleStopClick}/>
@@ -121,14 +131,14 @@ class App extends Component {
           <div>
             <DataTable 
               results={this.state.results}
-              lapseThresh={this.state.lapseThresh}
+              lapseThresh={this.state.settings.lapseThresh}
               />
             <DataSummary 
               results={this.state.results}
               userName={this.state.userName}
               testStart={this.state.testStart}
-              lapseThresh={this.state.lapseThresh}
-              validThresh={this.state.validThresh}
+              lapseThresh={this.state.settings.lapseThresh}
+              validThresh={this.state.settings.validThresh}
               />
             <div className="controls">
               <Button name="Start Test" onClick={this.handleStartClick}/>
@@ -136,7 +146,11 @@ class App extends Component {
           </div>;  
         break;
       default:
-        pane = null;
+        //pane = null;
+        //let settings = {testDuration: 60, maxWait: 10}
+        pane =<Settings settings={this.state.settings}
+          cb={this.settingsCB}
+        />;
     }
   
     return (

@@ -15,7 +15,8 @@ class ResponseTimer extends React.Component {
   
   componentDidMount() {
     // wait a random interval, then start ticking
-    const wait = 1000 * (2 + Math.floor(Math.random() * 8));  // milliseconds
+    //const wait = 1000 * (2 + Math.floor(Math.random() * 8));  // milliseconds
+    const wait = 1000 * (2 + Math.floor(Math.random() * (this.props.maxWait - 2)));  // milliseconds
     this.startID = setTimeout(
         () => this.start(), wait
       );
