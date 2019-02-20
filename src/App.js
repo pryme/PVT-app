@@ -31,7 +31,7 @@ class App extends Component {
       userName: "Patrick",
       userComment: "",
       settings: {
-        testDuration: 65 * 1000,  // milliseconds
+        testDuration: 300 * 1000,  // milliseconds
         maxWait: 10,  // seconds; max delay before stimulus starts
         validThresh: 100,  // milliseconds; RT > thresh is valid
         lapseThresh: 500  // milliseconds; RT > thresh is lapse

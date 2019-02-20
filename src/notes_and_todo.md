@@ -1,5 +1,17 @@
-/*******Refactor*******************************
-Structure of app:
+# TODO:
+* Allow to change and show settings:
+    * Need to show 'settings' button (or gear) except on running and settings view
+    * On settings view, need to show 'done' or 'done with settings' and not 'reset all'
+    * Need a mechanism to save settings for user. This doesn't happen right now. 
+* Save data, recall historical data, export data?
+* Graph data?
+* Validate accuracy, offset of timer (needs setup):
+    * Develop optical "stimulus start" detector
+    * Develop reaction sensor to parallel mouse click
+* Evaluate effect of clamscan running concurrently
+* Gaming mouse? (check prices of gaming mice)
+
+# Structure of app:
 * App runs one test consisting of 1-to-many ResponseTimer measurements
 * One ResponseTimer measurement is:
   * Random delay before stimulus is presented
@@ -35,34 +47,21 @@ Structure of app:
   * Subject data defaults to same as previous test (unless noted)
   * Subject name
   * Subject comments about perceived sleep deficit? (defaults empty)
-***************************************/
-/**************************************
-ResponseTimer state:
+
+# ResponseTimer state:
 * msElapsed (this is the result time)
 * stimulus start time (or date): reference for elapsed time
-***************************************/
-/**************************************
-PVTTest state:
+
+# PVTTest state:
 * stage (state machine: ready, running, done)
 * rtDone (signal that ResponseTimer finished)
 * testStart (mark start of test duration)
 * All settings (should this be separate component?)
 * All subject data (should this be separate component?)
 * Results (what form?)
-***************************************/
-/*************************************
-Results data storage:
+
+# Results data storage:
 * Let's start only concerned with data from a single test:
   * store in sessionStorage or localStorage as array of RT measurements
   * Ex: [430, 258, 333]
   * need to JSON.stringify and JSON.parse (localStorage is string only)
-
-TODO:
-* Save data, recall historical data, export data?
-* Graph data?
-* -/ Expand false starts to capture very low RT (say, <100 ms)
-* Validate accuracy, offset of timer (needs setup)
-* Evaluate effect of clamscan running concurrently
-* Gaming mouse?
-* -/ Move off CodePen to local machine
-* Allow to change and show settings

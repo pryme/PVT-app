@@ -65,9 +65,10 @@ td.false {
 }
 
 td.footer {
-  color: darkblue;
+  color: grey;
   padding-top: 10px;
   text-align: left;
+  border: none;
 }
 
 th {
