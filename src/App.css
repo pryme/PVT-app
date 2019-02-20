@@ -60,6 +60,16 @@ td.lapse {
   background-color: pink;
 }
 
+td.false {
+  background-color: lemonchiffon;
+}
+
+td.footer {
+  color: darkblue;
+  padding-top: 10px;
+  text-align: left;
+}
+
 th {
   text-align: left;
   padding: 0px 5px;

@@ -23,8 +23,8 @@ class App extends Component {
     this.settingsCB = this.settingsCB.bind(this);
     this.state = {
       // stage of PVT test state machine (header, ready, running, done)
-      //testStage: "header",  
-      testStage: "test",  // TODO fix manual edit for test
+      testStage: "header",  
+      //testStage: "test",  // TODO fix manual edit for test
       rtDone: false,  // response timer finished?
       testStart: new Date(),  // mark start of test duration
       results: [],
@@ -131,6 +131,7 @@ class App extends Component {
           <div>
             <DataTable 
               results={this.state.results}
+              validThresh={this.state.settings.validThresh}
               lapseThresh={this.state.settings.lapseThresh}
               />
             <DataSummary 

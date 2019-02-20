@@ -19,29 +19,6 @@ class DataTable extends React.Component {
     }
   }
 
-  generateRows2(array, lapseThresh, cols=5) {
-    // cols is number of cols for table
-    let result = [];
-    if (array.length > 0) {
-      let value = null;
-      let cellClass = null;
-      let rows = Math.ceil(array.length / cols);
-      for (let i=0; i<rows; i++) {
-        let newRow;
-        for (let j=0; j<cols; j++) {
-          let index = i * cols + j;
-          if (index < array.length) {
-            newRow = {newRow} + <td> + {array[index]} + </td>;
-          } else {newRow = {newRow} + <td></td>;}
-        }
-        newRow = <tr> + {newRow} + </tr>;
-        result.push({newRow});
-      }
-    }
-    console.log(result);  // TODO temp
-    return result;
-  }
-  
   toMatrix(arr, width) {
    return arr.reduce(function(rows, val, idx) {
      return (idx % width === 0 ? rows.push([val]) : 
@@ -51,6 +28,7 @@ class DataTable extends React.Component {
 
   render() {
     const lapseThresh = this.props.lapseThresh;
+    const validThresh = this.props.validThresh;
     const results = this.props.results.map(
       function(item) {
         let val;
@@ -59,25 +37,42 @@ class DataTable extends React.Component {
       }
     );
     // reshape to matrix
-    const mat = this.toMatrix(results, 5);  // false starts already labelled
-    
+    const cols = 5;
+    const mat = this.toMatrix(results, cols);  // false starts already labelled
     try {
       return <div className="results">
              <table>
                <caption>Response Time</caption>
                <tbody>
-                 <tr><th>Milliseconds</th></tr>  
                 {mat.map(
                   function(row, idx) {
                     return <tr key={idx}>
                       {row.map(function(cell, idx) {
-                        return <td key={idx}>{cell}</td>;
+                        let cellClass;
+                        if (cell === "FS" || cell < validThresh) {
+                          cellClass = "false";
+                        }
+                        if (cell > lapseThresh) {
+                          cellClass = "lapse";
+                        }
+                        return <td key={idx} className={cellClass}>{cell}</td>;
                       })}
                     </tr>;
                   }
                 )}
-
                </tbody>
+               <tfoot>
+                  <tr>
+                    <td colSpan={cols} className="footer">
+                     Times in ms. 'FS' means false start.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colSpan={cols} className="footer">
+                     Valid window: {validThresh} - {lapseThresh}
+                    </td>
+                  </tr>
+               </tfoot>
              </table>
              </div>;
     } catch(err) {
