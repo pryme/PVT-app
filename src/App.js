@@ -9,6 +9,7 @@ import DataTable from './data_table';
 import ErrorBoundary from './error_boundary';
 import DataSummary from './data_summary';
 import Settings from './settings';
+import TestFooter from './test_footer';
 
 class App extends Component {
   constructor(props) {
@@ -20,9 +21,10 @@ class App extends Component {
     this.handleHeaderSubmit = this.handleHeaderSubmit.bind(this);
     this.handleResetAll = this.handleResetAll.bind(this);
     this.rtDoneCB = this.rtDoneCB.bind(this);
-    this.settingsCB = this.settingsCB.bind(this);
+    this.changeSettingsCB = this.changeSettingsCB.bind(this);
+    this.showSettingsCB = this.showSettingsCB.bind(this);
     this.state = {
-      // stage of PVT test state machine (header, ready, running, done)
+      // stage of PVT test state machine (header, ready, running, done, settings)
       testStage: "header",  
       //testStage: "test",  // TODO fix manual edit for test
       rtDone: false,  // response timer finished?
@@ -85,11 +87,23 @@ class App extends Component {
       this.setState({results: newResults});
     }
   }
- 
-  settingsCB(obj) {
+// 
+  changeSettingsCB(obj) {
     this.setState({
       settings: obj
     });
+  }
+
+  showSettingsCB() {
+    if (this.state.testStage === "settings") {
+      this.setState({
+        testStage: "header"
+      });
+    } else {
+      this.setState({
+        testStage: "settings"
+      });
+    }
   }
 
   render() {
@@ -146,12 +160,13 @@ class App extends Component {
             </div>
           </div>;  
         break;
-      default:
-        //pane = null;
-        //let settings = {testDuration: 60, maxWait: 10}
+      case "settings":
         pane =<Settings settings={this.state.settings}
-          cb={this.settingsCB}
+          cb={this.changeSettingsCB}
         />;
+        break;
+      default:
+        pane = null;
     }
   
     return (
@@ -159,9 +174,11 @@ class App extends Component {
         <h1>Psychomotor Vigilance Test</h1>
         <h2>Experimental</h2>
         {pane}
-        <div>
-          <Button name="Reset All" onClick={this.handleResetAll}/>
-        </div>
+        <TestFooter resetAllCB={this.handleResetAll}
+          testStage={this.state.testStage}
+          showSettingsCB={this.showSettingsCB}
+          changeSettingsCB={this.changeSettingsCB}
+        />
       </div>
     );
   } 

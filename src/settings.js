@@ -14,7 +14,10 @@ class Settings extends React.Component {
   }
 
   handleChange(e) {
-      let tempSettings = this.props.settings;
+      console.log("From Settings.handleChange: called");
+      //let tempSettings = this.props.settings;
+      // below: checking issues with mutation
+      let tempSettings = JSON.parse(JSON.stringify(this.props.settings));
       tempSettings[e.target.name] = e.target.value;
       this.props.cb(tempSettings);  // pass up to state
     return;
@@ -23,7 +26,7 @@ class Settings extends React.Component {
   render() {
       let settings = this.props.settings;  // get obj from props
       let rows = Object.keys(settings).map( (item) => {
-        return <tr>
+        return <tr key={item}>
             <td>{item}</td>
             <td>
                 <input type="text" value={settings[item]} 
