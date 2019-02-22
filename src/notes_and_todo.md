@@ -3,13 +3,29 @@
     * Need to show 'settings' button (or gear) except on running and settings view
     * On settings view, need to show 'done' or 'done with settings' and not 'reset all'
     * Need a mechanism to save settings for user. This doesn't happen right now. 
-* Save data, recall historical data, export data?
+* Save data, recall historical data, export data:
+    * Assume saving JSON stringified data
+    * What to save? Ideas:
+        * User ID (unique) (1st key)
+            * User name ('firstName' + ' ' + 'lastName')
+            * User preferred settings
+            * User tests:
+                * UID-timestamp (2nd key): JSON object string
+                * UID-timestamp (2nd key): JSON object string
+                * UID-timestamp (2nd key): JSON object string
+    * What form for test data?:
+        * {UID-timestamp: {UserInfo: {}, RTdata: {}, Analytics: {} }}
+* How does User ID get assigned first time? New account mechanism...
+    * AddNewUser component
+    * change test header to offer dropdown list of users with accounts
+
 * Graph data?
 * Validate accuracy, offset of timer (needs setup):
     * Develop optical "stimulus start" detector
     * Develop reaction sensor to parallel mouse click
 * Evaluate effect of clamscan running concurrently
-* Gaming mouse? (check prices of gaming mice)
+* Gaming mouse? (check prices of gaming mice)a
+* Does "reset all" restore default settings? Should it?
 
 # Structure of app:
 * App runs one test consisting of 1-to-many ResponseTimer measurements

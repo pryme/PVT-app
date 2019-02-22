@@ -10,6 +10,7 @@ import ErrorBoundary from './error_boundary';
 import DataSummary from './data_summary';
 import Settings from './settings';
 import TestFooter from './test_footer';
+import AddNewUser from './add_new_user'
 
 class App extends Component {
   constructor(props) {
@@ -179,6 +180,8 @@ class App extends Component {
           showSettingsCB={this.showSettingsCB}
           changeSettingsCB={this.changeSettingsCB}
         />
+        <h2>==== test below ====</h2>
+        <AddNewUser />
       </div>
     );
   } 
