@@ -1,9 +1,11 @@
 import React from 'react';
+import { valueInLS, addNewUser} from './user_list';
 
 class AddNewUser extends React.Component {
   constructor(props) {
     super(props);
   }
+
   onSubmit = (e) => {
     e.preventDefault();
     // e.target is the id="newUser" form
@@ -11,32 +13,18 @@ class AddNewUser extends React.Component {
     const firstName = e.target.firstName.value.trim();
     const lastName = e.target.lastName.value.trim();
     const fullName = firstName + " " + lastName;
-    let numUsers = localStorage.length;  // 1 record / user
-    let userID = 0;
-    let isNew = true;  // assume new user
-    if (numUsers > 0) {
-      const lsKeys = Object.keys(localStorage);  // array of keys
-      lsKeys.forEach(function(key) {
-        if (JSON.parse(localStorage.getItem(key)).toUpperCase() === 
-            fullName.toUpperCase()) {
-          isNew = false;
-          alert("This user name already exists");
-        }
-      });
-      if (isNew) {
-        userID = "U" + (numUsers + 1);  // first user is ID 1, then integers
-        localStorage.setItem(userID, JSON.stringify(fullName));
-      }
-    } else {  // first user to add
-      userID = "U" + (numUsers + 1);  // first user is ID 1, then integers
-      localStorage.setItem(userID, JSON.stringify(fullName));
-    }
+    let isNew = !valueInLS(fullName);
+    if (isNew) {addNewUser(fullName);}
+    // this callback passes up the name, and also resets AddNew flag
+    this.props.cb(fullName);  
+    //alert("AddNewUser.onSubmit: Go to Comments / Proceed");
   }
 
   render() {
     return(
       <form onSubmit={this.onSubmit} id="newUser">
         <h1>New User Setup</h1>
+        <p>Enter your info below.</p>
         <input type="text" name="firstName" placeholder="First name" />
         <input type="text" name="lastName" placeholder="Last name" />
         <input type="submit" value="Submit" />

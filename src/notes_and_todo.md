@@ -19,6 +19,13 @@
     * AddNewUser component
     * change test header to offer dropdown list of users with accounts
 
+* Need to change view state machine:
+    * From "header, ready, running, done, settings" 
+    * To: "get user, header, ready, running, done, settings"
+    * Get user state will have two views: default with dropdown list and exception for new user. But state will not change. When user is selected state will change to header.
+
+
+
 * Graph data?
 * Validate accuracy, offset of timer (needs setup):
     * Develop optical "stimulus start" detector

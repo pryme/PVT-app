@@ -11,6 +11,7 @@ import DataSummary from './data_summary';
 import Settings from './settings';
 import TestFooter from './test_footer';
 import AddNewUser from './add_new_user'
+import ChooseUser from './choose_user';
 
 class App extends Component {
   constructor(props) {
@@ -26,7 +27,7 @@ class App extends Component {
     this.showSettingsCB = this.showSettingsCB.bind(this);
     this.state = {
       // stage of PVT test state machine (header, ready, running, done, settings)
-      testStage: "header",  
+      testStage: "get_user",  
       //testStage: "test",  // TODO fix manual edit for test
       rtDone: false,  // response timer finished?
       testStart: new Date(),  // mark start of test duration
@@ -107,9 +108,25 @@ class App extends Component {
     }
   }
 
+  // callback for ChooseUser name selection
+  namePickCB = (pick)  => {
+    // pick is name selected from dropdown
+    //alert("Go to Comments / Proceed with user: " + pick);
+    this.setState({
+      userName: pick,
+      testStage: "header"
+    });
+  }
+
   render() {
     let pane;  // what to show
     switch (this.state.testStage) {
+      case "get_user":
+        pane = 
+          <ChooseUser 
+            cb={this.namePickCB}
+            />
+        break;
       case "header":
         pane = 
           <TestHeader 
@@ -181,7 +198,6 @@ class App extends Component {
           changeSettingsCB={this.changeSettingsCB}
         />
         <h2>==== test below ====</h2>
-        <AddNewUser />
       </div>
     );
   } 

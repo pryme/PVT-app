@@ -1,4 +1,5 @@
 import React from 'react';
+import ChooseUser from './choose_user';
 
 class TestHeader extends React.Component {
   // get subject info and adjust settings
@@ -18,11 +19,15 @@ class TestHeader extends React.Component {
   }
   
   handleSubmit(e) {
-    //alert("Form submitted");
-    this.props.onSubmit()
     e.preventDefault();
+    Object.keys(localStorage).forEach( key => {
+      console.log(localStorage.getItem(key));
+    });
+    // TODO: this needs work...
+    //this.props.onSubmit()
   }
-  
+
+ // 
   render() {
     return(
       <div className="TestHeader">
@@ -33,6 +38,7 @@ class TestHeader extends React.Component {
             placeholder="Test subject name"
             onChange={this.handleNameChange}
             value={this.props.userName}
+            name="userName"
           /> 
           <br/>
           <textarea 
