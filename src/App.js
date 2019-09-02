@@ -26,13 +26,13 @@ class App extends Component {
     this.changeSettingsCB = this.changeSettingsCB.bind(this);
     this.showSettingsCB = this.showSettingsCB.bind(this);
     this.state = {
-      // stage of PVT test state machine (header, ready, running, done, settings)
+      // stage of PVT test state machine (get_user, header, ready, running, done, settings)
       testStage: "get_user",  
       //testStage: "test",  // TODO fix manual edit for test
       rtDone: false,  // response timer finished?
       testStart: new Date(),  // mark start of test duration
       results: [],
-      userName: "Patrick",
+      userName: null,
       userComment: "",
       settings: {
         testDuration: 300 * 1000,  // milliseconds
@@ -77,7 +77,7 @@ class App extends Component {
   }
   
   handleResetAll() {
-    this.setState({testStage: "header"});
+    this.setState({testStage: "get_user"});
   }
   
   rtDoneCB(status, result) {
@@ -173,9 +173,11 @@ class App extends Component {
               lapseThresh={this.state.settings.lapseThresh}
               validThresh={this.state.settings.validThresh}
               />
+          {/*}    
             <div className="controls">
               <Button name="Start Test" onClick={this.handleStartClick}/>
             </div>
+      */}
           </div>;  
         break;
       case "settings":

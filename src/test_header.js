@@ -20,14 +20,9 @@ class TestHeader extends React.Component {
   
   handleSubmit(e) {
     e.preventDefault();
-    Object.keys(localStorage).forEach( key => {
-      console.log(localStorage.getItem(key));
-    });
-    // TODO: this needs work...
-    //this.props.onSubmit()
+    this.props.onSubmit()
   }
 
- // 
   render() {
     return(
       <div className="TestHeader">

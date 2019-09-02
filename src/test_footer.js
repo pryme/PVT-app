@@ -7,20 +7,45 @@ class TestFooter extends React.Component {
    } 
 
    render() {
-    if (this.props.testStage === "settings") {
+    switch (this.props.testStage) {
+      case "get_user":
+        return null;
+        break;
+      case "header":
+        return(
+            <div>
+                <Button name="Reset" onClick={this.props.resetAllCB}/>
+                <Button name="Settings" onClick={this.props.showSettingsCB}/>
+            </div>
+        );
+        break;
+      case "ready":
+        return(
+            <div>
+                <Button name="Reset" onClick={this.props.resetAllCB}/>
+            </div>
+        );
+        break;
+      case "running":
+        return null;
+        break;
+      case "done":
+        return(
+            <div>
+                <Button name="Reset" onClick={this.props.resetAllCB}/>
+            </div>
+        );
+        break;
+      case "settings":
         return(
             <div>
                 <Button name="Done with Settings" 
                 onClick={this.props.showSettingsCB}/>
             </div>
         );
-    } else {
-        return(
-            <div>
-                <Button name="Reset All" onClick={this.props.resetAllCB}/>
-                <Button name="Settings" onClick={this.props.showSettingsCB}/>
-            </div>
-        );
+        break;
+      default:
+        return null;
     }
    }
 }
