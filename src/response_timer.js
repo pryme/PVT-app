@@ -1,7 +1,78 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+// following is not needed TODO 
 import StimulusDisplay from './stimulus_display';
 
-class ResponseTimer extends React.Component {
+/***************************************************
+ * Refactoring this into a functional component using hooks.
+ * 
+ * Simple up-counter with:
+ *    * count increment is parametric number of ms
+ *    * output value is ms
+ *    * starts at 0
+ *    * starts automatically after parametric delay after render
+ *    * can be stopped by clicking on associated button
+ **************************************************/
+
+function ResponseTimer(props) {
+  const [total, setTotal] = useState(null);  // ms
+  const [increment, setIncrement] = useState(null);  // ms
+  const savedCallback = useRef();
+
+  useEffect(() => {
+    //savedCallback.current = callback;
+    savedCallback.current = () => setTotal(total + increment);
+  });
+
+  useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if (increment !== null) {
+      let id = setInterval(tick, increment);
+      return () => clearInterval(id);
+    }
+  }, [increment]);
+
+  useEffect(() => {
+    if (increment === null) {
+      let tid = setTimeout(() => {
+        setIncrement(props.countBy);
+      }, props.startDelay);
+    }
+  });
+
+  function handleStop() {
+    setIncrement(null);
+    props.cb(true, total);  // sent done signal and data
+  }
+
+  function handleStart() {
+    setTimeout(() => setIncrement(props.countBy), props.startDelay);
+  }
+
+  function handleReset() {
+    setTotal(0);
+    setIncrement(null);
+  }
+
+  if (total === null) {
+    return (
+      <div id="response-timer" className="stimulus-text-hidden" >
+       <h1>0</h1>
+       <button onClick={handleStop}>Stop</button>
+      </div>
+    );
+  } else {
+    return (
+      <div id="response-timer">
+       <h1>{total}</h1>
+       <button onClick={handleStop}>Stop</button>
+      </div>
+    );
+  }
+}
+
+class OLD_ResponseTimer extends React.Component {
   // measures time to respond to a stimulus that appears after random wait
   constructor(props) {
     super(props);

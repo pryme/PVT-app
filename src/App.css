@@ -165,8 +165,12 @@ input[type=text], textarea {
 }
 
 .stimulus-text {
-  display: table-cell;
+  display: table-cell; 
   vertical-align: middle;
+}
+
+.stimulus-text-hidden {
+  color: #BBBBBB;
 }
 
 #response-timer {

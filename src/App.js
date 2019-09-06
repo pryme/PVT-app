@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import ResponseTimer from './response_timer';
 import Button from './button';
 import TestHeader from './test_header';
 import ProgressBar from './progress_bar';
@@ -12,6 +11,7 @@ import Settings from './settings';
 import TestFooter from './test_footer';
 import AddNewUser from './add_new_user'
 import ChooseUser from './choose_user';
+import StimulusDisplay from './stimulus_display';
 
 class App extends Component {
   constructor(props) {
@@ -147,9 +147,19 @@ class App extends Component {
         if (!this.state.rtDone) {
           pane = 
             <div>
+{/********************************************
             <ResponseTimer cb={this.rtDoneCB}
               maxWait={this.state.settings.maxWait}
             />
+******************************************/}
+            { /* <ResponseTimer countBy={10} startDelay={2000} cb={this.rtDoneCB} /> */}
+
+{/********************************************
+            Make StimulusDisplay the main element for timer display.
+******************************************/}
+            <StimulusDisplay cb={this.rtDoneCB} maxWait={this.state.settings.maxWait} />
+
+
             <ProgressBar duration={this.state.settings.testDuration} 
               start={this.state.testStart}/>
             <div className="controls">
