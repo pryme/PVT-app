@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Button from './button';
@@ -13,206 +13,170 @@ import AddNewUser from './add_new_user'
 import ChooseUser from './choose_user';
 import StimulusDisplay from './stimulus_display';
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.handleStartClick = this.handleStartClick.bind(this);
-    this.handleStopClick = this.handleStopClick.bind(this);
-    this.handleNameChange = this.handleNameChange.bind(this);
-    this.handleCommentChange = this.handleCommentChange.bind(this);
-    this.handleHeaderSubmit = this.handleHeaderSubmit.bind(this);
-    this.handleResetAll = this.handleResetAll.bind(this);
-    this.rtDoneCB = this.rtDoneCB.bind(this);
-    this.changeSettingsCB = this.changeSettingsCB.bind(this);
-    this.showSettingsCB = this.showSettingsCB.bind(this);
-    this.state = {
-      // stage of PVT test state machine (get_user, header, ready, running, done, settings)
-      testStage: "get_user",  
-      //testStage: "test",  // TODO fix manual edit for test
-      rtDone: false,  // response timer finished?
-      testStart: new Date(),  // mark start of test duration
-      results: [],
-      userName: null,
-      userComment: "",
-      settings: {
-        testDuration: 300 * 1000,  // milliseconds
-        maxWait: 10,  // seconds; max delay before stimulus starts
-        validThresh: 100,  // milliseconds; RT > thresh is valid
-        lapseThresh: 500  // milliseconds; RT > thresh is lapse
-      }
-    };
-  }
+function App() {
+  // stage of PVT test state machine (get_user, header, ready, running, done, settings)
+  const [testStage, setTestStage] = useState("get_user");
+  const [rtDone, setRtDone] = useState(false);  // response timer finished?
+  const [testStart, setTestStart] = useState(new Date())  // mark start of test duration
+  const [results, setResults] = useState([]);
+  const [userName, setUserName] = useState(null);
+  const [userComment, setUserComment] = useState("");
+  const [settings, setSettings] = useState(
+    { testDuration: 300 * 1000,  // milliseconds
+      maxWait: 10,  // seconds; max delay before stimulus starts
+      validThresh: 100,  // milliseconds; RT > thresh is valid
+      lapseThresh: 500  // milliseconds; RT > thresh is lapse
+    }
+  );
 
-  handleStartClick() {  // start the test
-    this.setState({
-      testStage: "running",
-      rtDone: false,
-      testStart: new Date(),
-      results: []
-    });
-    this.durationID = setTimeout(  // for test duration
-      () => this.handleStopClick(), this.state.settings.testDuration
+  let durationID;
+  const handleStartClick = () => {  // start the test
+    setTestStage("running");
+    setRtDone(false);
+    setTestStart(new Date());
+    setResults([]);
+    durationID = setTimeout(  // for test duration
+      () => handleStopClick(), settings.testDuration
     );
   }
-  
-  handleStopClick() {  // need to sort which button
-    this.setState({
-      testStage: "done"
-    });
-    clearTimeout(this.durationID);
+
+  const handleStopClick = () => {  // need to sort which button
+    setTestStage("done");
+    clearTimeout(durationID);
   }
-  
-  handleNameChange(text) {
-    this.setState({userName: text});
-    //alert("handleNameChange called");
+  const handleNameChange = (text) => {
+    setUserName(text);
   }
-  
-  handleCommentChange(text) {
-    this.setState({userComment: text});
-    //alert("handleCommentChange called");
+  const handleCommentChange = (text) => {
+    setUserComment(text);
   }
-  
-  handleHeaderSubmit() {
-    this.setState({testStage: "ready"});
+  const handleHeaderSubmit = () => {
+    setTestStage("ready");
   }
-  
-  handleResetAll() {
-    this.setState({testStage: "get_user"});
+  const handleResetAll = () => {
+    setTestStage("get_user");
   }
-  
-  rtDoneCB(status, result) {
-    this.setState({rtDone: status});
+  const rtDoneCB = (status, result) => {
+    setRtDone(status);
     if (status) {  // called from ResponseTimer.cleanup()
       // need to save response time data
-      let newResults = this.state.results.slice();  // copy
+      let newResults = results.slice();  // copy
       newResults.push(result);  // append new measurement
-      this.setState({results: newResults});
+      setResults(newResults);
     }
   }
-// 
-  changeSettingsCB(obj) {
-    this.setState({
-      settings: obj
-    });
+  const changeSettingsCB = (obj) => {
+    setSettings(obj);
   }
-
-  showSettingsCB() {
-    if (this.state.testStage === "settings") {
-      this.setState({
-        testStage: "header"
-      });
+  const showSettingsCB = () => {
+    if (testStage === "settings") {
+      setTestStage("header");
     } else {
-      this.setState({
-        testStage: "settings"
-      });
+      setTestStage("settings");
     }
   }
-
   // callback for ChooseUser name selection
-  namePickCB = (pick)  => {
+  const namePickCB = (pick)  => {
     // pick is name selected from dropdown
     //alert("Go to Comments / Proceed with user: " + pick);
-    this.setState({
-      userName: pick,
-      testStage: "header"
-    });
+    setUserName(pick);
+    setTestStage("header");
   }
 
-  render() {
-    let pane;  // what to show
-    switch (this.state.testStage) {
-      case "get_user":
-        pane = 
-          <ChooseUser 
-            cb={this.namePickCB}
-            />
-        break;
-      case "header":
-        pane = 
-          <TestHeader 
-            userName={this.state.userName}
-            onNameChange={this.handleNameChange}
-            userComment={this.state.userComment}  
-            onCommentChange={this.handleCommentChange}
-            onSubmit={this.handleHeaderSubmit}
+  let pane;  // what to show
+  switch (testStage) {
+    case "get_user":
+      pane = 
+        <ChooseUser 
+          cb={namePickCB}
           />
-        break;
-      case "ready":
-        pane = 
-          <div className="controls">
-          <Button name="Start Test" onClick={this.handleStartClick}/>
-          </div>
-        break;
-      case "running":
-        if (!this.state.rtDone) {
-          pane = 
-            <div>
-{/********************************************
-            <ResponseTimer cb={this.rtDoneCB}
-              maxWait={this.state.settings.maxWait}
-            />
-******************************************/}
-            { /* <ResponseTimer countBy={10} startDelay={2000} cb={this.rtDoneCB} /> */}
-
-{/********************************************
-            Make StimulusDisplay the main element for timer display.
-******************************************/}
-            <StimulusDisplay cb={this.rtDoneCB} maxWait={this.state.settings.maxWait} />
-
-
-            <ProgressBar duration={this.state.settings.testDuration} 
-              start={this.state.testStart}/>
-            <div className="controls">
-              <Button name="Stop Test" onClick={this.handleStopClick}/>
-            </div>
-            </div>;  
-        } else {pane = null;}
-        break;
-      case "done":
+      break;
+    case "header":
+      pane = 
+        <TestHeader 
+          userName={userName}
+          onNameChange={handleNameChange}
+          userComment={userComment}  
+          onCommentChange={handleCommentChange}
+          onSubmit={handleHeaderSubmit}
+        />
+      break;
+    case "ready":
+      pane = 
+        <div className="controls">
+        <Button name="Start Test" onClick={handleStartClick}/>
+        </div>
+      break;
+    case "running":
+      if (!rtDone) {
         pane = 
           <div>
-            <DataTable 
-              results={this.state.results}
-              validThresh={this.state.settings.validThresh}
-              lapseThresh={this.state.settings.lapseThresh}
-              />
-            <DataSummary 
-              results={this.state.results}
-              userName={this.state.userName}
-              testStart={this.state.testStart}
-              lapseThresh={this.state.settings.lapseThresh}
-              validThresh={this.state.settings.validThresh}
-              />
-          {/*}    
-            <div className="controls">
-              <Button name="Start Test" onClick={this.handleStartClick}/>
-            </div>
-      */}
+{/********************************************
+          <ResponseTimer cb={this.rtDoneCB}
+            maxWait={this.state.settings.maxWait}
+          />
+******************************************/}
+          { /* <ResponseTimer countBy={10} startDelay={2000} cb={this.rtDoneCB} /> */}
+
+{/********************************************
+          Make StimulusDisplay the main element for timer display.
+******************************************/}
+          <StimulusDisplay cb={rtDoneCB} maxWait={settings.maxWait} />
+
+
+          <ProgressBar duration={settings.testDuration} 
+            start={testStart}/>
+          <div className="controls">
+            <Button name="Stop Test" onClick={handleStopClick}/>
+          </div>
           </div>;  
-        break;
-      case "settings":
-        pane =<Settings settings={this.state.settings}
-          cb={this.changeSettingsCB}
-        />;
-        break;
-      default:
-        pane = null;
-    }
-  
-    return (
-      <div className="App">
-        <h1>Psychomotor Vigilance Test</h1>
-        <h2>Experimental</h2>
-        {pane}
-        <TestFooter resetAllCB={this.handleResetAll}
-          testStage={this.state.testStage}
-          showSettingsCB={this.showSettingsCB}
-          changeSettingsCB={this.changeSettingsCB}
-        />
-        <h2>==== test below ====</h2>
-      </div>
-    );
-  } 
+      } else {pane = null;}
+      break;
+    case "done":
+      pane = 
+        <div>
+          <DataTable 
+            results={results}
+            validThresh={settings.validThresh}
+            lapseThresh={settings.lapseThresh}
+            />
+          <DataSummary 
+            results={results}
+            userName={userName}
+            testStart={testStart}
+            lapseThresh={settings.lapseThresh}
+            validThresh={settings.validThresh}
+            />
+        {/*}    
+          <div className="controls">
+            <Button name="Start Test" onClick={this.handleStartClick}/>
+          </div>
+    */}
+        </div>;  
+      break;
+    case "settings":
+      pane =<Settings settings={settings}
+        cb={changeSettingsCB}
+      />;
+      break;
+    default:
+      pane = null;
+  }
+
+  return (
+    <div className="App">
+      <h1>Psychomotor Vigilance Test</h1>
+      <h2>Experimental</h2>
+      {pane}
+      <TestFooter resetAllCB={handleResetAll}
+        testStage={testStage}
+        showSettingsCB={showSettingsCB}
+        changeSettingsCB={changeSettingsCB}
+      />
+      <h2>==== test below ====</h2>
+    </div>
+  );
+
 }
 
 export default App;
