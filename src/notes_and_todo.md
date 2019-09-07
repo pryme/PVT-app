@@ -1,8 +1,4 @@
 # TODO:
-* Allow to change and show settings:
-    * Need to show 'settings' button (or gear) except on running and settings view
-    * On settings view, need to show 'done' or 'done with settings' and not 'reset all'
-    * Need a mechanism to save settings for user. This doesn't happen right now. 
 * Save data, recall historical data, export data:
     * Assume saving JSON stringified data
     * What to save? Ideas:
@@ -15,14 +11,6 @@
                 * UID-timestamp (2nd key): JSON object string
     * What form for test data?:
         * {UID-timestamp: {UserInfo: {}, RTdata: {}, Analytics: {} }}
-* How does User ID get assigned first time? New account mechanism...
-    * AddNewUser component
-    * change test header to offer dropdown list of users with accounts
-
-* Need to change view state machine:
-    * From "header, ready, running, done, settings" 
-    * To: "get user, header, ready, running, done, settings"
-    * Get user state will have two views: default with dropdown list and exception for new user. But state will not change. When user is selected state will change to header.
 
 
 
