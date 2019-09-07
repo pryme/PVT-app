@@ -167,6 +167,8 @@ input[type=text], textarea {
 .stimulus-text {
   display: table-cell; 
   vertical-align: middle;
+  text-align: center;
+  color: #000000;
 }
 
 .stimulus-text-hidden {

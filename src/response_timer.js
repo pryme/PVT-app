@@ -10,7 +10,6 @@ import StimulusDisplay from './stimulus_display';
  *    * output value is ms
  *    * starts at 0
  *    * starts automatically after parametric delay after render
- *    * can be stopped by clicking on associated button
  **************************************************/
 
 function ResponseTimer(props) {
@@ -29,7 +28,12 @@ function ResponseTimer(props) {
     }
     if (increment !== null) {
       let id = setInterval(tick, increment);
-      return () => clearInterval(id);
+      return(
+        () => {
+          clearInterval(id);  // clean up tick
+          props.cb(false, null);  // allow new timer to launch
+        }
+      ) 
     }
   }, [increment]);
 
@@ -38,6 +42,7 @@ function ResponseTimer(props) {
       let tid = setTimeout(() => {
         setIncrement(props.countBy);
       }, props.startDelay);
+      return () => clearTimeout(tid);
     }
   });
 
@@ -50,23 +55,29 @@ function ResponseTimer(props) {
     setTimeout(() => setIncrement(props.countBy), props.startDelay);
   }
 
-  function handleReset() {
-    setTotal(0);
-    setIncrement(null);
+  function handleClick() {
+    props.cb(true, total);  // sent done signal and data
+    if (increment !== null) {
+      setIncrement(null);  // reset after valid response
+    } else {
+      props.cb(false, null);  // allow new timer to launch
+    }
   }
 
+  const msg = 
+     <p style={{fontSize: "20px"}} className="stimulus-text">Stop the counter by clicking in the rectangle</p>
   if (total === null) {
     return (
-      <div id="response-timer" className="stimulus-text-hidden" >
-       <h1>0</h1>
-       <button onClick={handleStop}>Stop</button>
+      <div id="response-timer"  onClick={handleClick}>
+       <h1 className="stimulus-text-hidden">0</h1>
+       {msg}
       </div>
     );
   } else {
     return (
-      <div id="response-timer">
+      <div id="response-timer" onClick={handleClick}>
        <h1>{total}</h1>
-       <button onClick={handleStop}>Stop</button>
+       {msg}
       </div>
     );
   }
