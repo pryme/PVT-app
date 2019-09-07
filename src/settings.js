@@ -7,46 +7,39 @@ import React from 'react';
  * Also rec'd in props is a CB that will returned updated object
  * to state at higher level.
 ***************************************************/
-class Settings extends React.Component {
-  constructor(props) {
-      super(props);
-      this.handleChange = this.handleChange.bind(this);
-  }
 
-  handleChange(e) {
+function Settings(props) {
+  const handleChange = (e) => {
       console.log("From Settings.handleChange: called");
       //let tempSettings = this.props.settings;
       // below: checking issues with mutation
-      let tempSettings = JSON.parse(JSON.stringify(this.props.settings));
+      let tempSettings = JSON.parse(JSON.stringify(props.settings));
       tempSettings[e.target.name] = e.target.value;
-      this.props.cb(tempSettings);  // pass up to state
+      props.cb(tempSettings);  // pass up to state
     return;
   }
-
-  render() {
-      let settings = this.props.settings;  // get obj from props
-      let rows = Object.keys(settings).map( (item) => {
-        return <tr key={item}>
-            <td>{item}</td>
-            <td>
-                <input type="text" value={settings[item]} 
-                onChange={this.handleChange}
-                name={item}
-                />
-            </td>
-            </tr>
-      });
-      return( 
-        <div>
-          <h1>Settings</h1>
-          <table>
-              <tbody>
-                  {rows}
-              </tbody>
-          </table>
-        </div>
-      );
-  }
+  let settings = props.settings;  // get obj from props
+  let rows = Object.keys(settings).map( (item) => {
+    return <tr key={item}>
+        <td>{item}</td>
+        <td>
+            <input type="text" value={settings[item]} 
+            onChange={handleChange}
+            name={item}
+            />
+        </td>
+        </tr>
+  });
+  return( 
+    <div>
+      <h1>Settings</h1>
+      <table>
+        <tbody>
+          {rows}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 export default Settings;
