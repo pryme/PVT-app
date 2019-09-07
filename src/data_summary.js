@@ -1,55 +1,41 @@
 import React from 'react';
 
-class DataSummary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.isNormalRT = this.isNormalRT.bind(this);
-    this.isLapseRT = this.isLapseRT.bind(this);
-    this.getTestDuration = this.getTestDuration.bind(this);
-    this.meanRT = this.meanRT.bind(this);
-    this.isRT = this.isRT.bind(this);
-    this.isNormalRT = this.isNormalRT.bind(this);
-    this.isLapseRT = this.isLapseRT.bind(this);
-    this.getSum = this.getSum.bind(this);
-    this.medianRT = this.medianRT.bind(this);
-    this.fsCount = this.fsCount.bind(this);
-    this.lapseCount = this.lapseCount.bind(this);
-  }
-  isRT(item) {  // all reaction times, but not false starts
+// Refactor to functional component.
+function DataSummary(props) {
+  const isRT = (item) => {  // all reaction times, but not false starts
     // eliminate RTs less than validThresh
-    return(typeof(item) === "number" && (item > this.props.validThresh));
+    return typeof(item) === "number" && (item > props.validThresh); 
   }
-  isNormalRT(item) {  // check normal reaction time
-    return(typeof(item) === "number" && 
-      item > this.props.validThresh &&
-      item <= this.props.lapseThresh);
+  const isNormalRT = (item) => {  // check normal reaction time
+    return typeof(item) === "number" && 
+      item > props.validThresh &&
+      item <= props.lapseThresh;
   }
-  isLapseRT(item) {  // check lapsed reaction time
+  const isLapseRT = (item) => {  // check lapsed reaction time
     if (typeof(item) === "number") {
-      return ( (item > this.props.lapseThresh) );
-    } else {return(false);}
+      return item > props.lapseThresh;
+    } else return false;
   }
-  getSum(total, num) {
-    return(total + num);
+  const getSum = (total, num) => {
+    return total + num;
   }
-  
-  meanRT(array, filt) {
+  const meanRT = (array, filt) => {
     let result = null;
     let filtArray = array.filter(filt);
     if (filtArray.length > 0) {
-      result = Math.round(filtArray.reduce(this.getSum) / filtArray.length);
+      result = Math.round(filtArray.reduce(getSum) / filtArray.length);
     }
     return(result);
   }
-  fsCount(array) {
-    let filtArray = array.filter(this.isRT);
+  const fsCount = (array) => {
+    let filtArray = array.filter(isRT);
     return(array.length - filtArray.length);
   }
-  lapseCount(array) {
-    let filtArray = array.filter(this.isLapseRT);
+  const lapseCount = (array) => {
+    let filtArray = array.filter(isLapseRT);
     return(filtArray.length);
   }
-  medianRT(array, filt) {
+  const medianRT = (array, filt) => {
     let result = null;
     let sortedFiltArray = array.filter(filt).sort( function(a, b){return a-b} );  // numeric sort
     let odd = (sortedFiltArray.length % 2 !== 0);
@@ -62,71 +48,70 @@ class DataSummary extends React.Component {
     if (result === null || isNaN(result)) {result = null;}  // avoid NaN return
     return(result);
   }
-  getTestDuration() {
+  const getTestDuration = () => {
     let now = new Date();
-    let duration = now.getTime() - this.props.testStart.getTime();  // ms
+    let duration = now.getTime() - props.testStart.getTime();  // ms
     return(Math.round(duration / 1000));  // seconds
   }
-  
-  render() {
-    const data = this.props.results;
-    return <div>
-            <h2>Test Summary</h2>
-            <table>
-              <caption>Response Time</caption>
-              <tbody>
-                <tr>
-                  <th></th>
-                  <th>Normal</th>
-                  <th>All</th>
-                </tr>
-                <tr>
-                  <th>Mean time (ms):</th>
-                  <td>{this.meanRT(data, this.isNormalRT)}</td>
-                  <td>{this.meanRT(data, this.isRT)}</td>
-                </tr>
-                <tr>
-                  <th>Median time (ms):</th>
-                  <td>{this.medianRT(data, this.isNormalRT)}</td>
-                  <td>{this.medianRT(data, this.isRT)}</td>
-                </tr>
-              </tbody>
-            </table>
-      
-            <table>
-              <caption>Misses</caption>
-              <tbody>
-                <tr>
-                  <th>Number of lapses:</th>
-                  <td>{this.lapseCount(data)}</td>
-                </tr>
-                <tr>
-                  <th>Number of false starts:</th>
-                  <td>{this.fsCount(data)}</td>
-                </tr>
-                <tr>
-                  <th>Number of trials:</th>
-                  <td>{data.length}</td>
-                </tr>
-                <tr>
-                  <th>Test duration (s):</th>
-                  <td>{this.getTestDuration()}</td>
-                </tr>
-              </tbody>
-            </table>
-      
-            <table>
-              <caption>Metadata</caption>
-              <thead><tr>
-                <th>Subject</th><th>Date</th>
-                </tr></thead>
-              <tbody><tr>
-                <td>{this.props.userName}</td>
-                <td>{this.props.testStart.toLocaleString()}</td>
-                </tr></tbody>
-            </table>
-           </div>
-  }
+  const data = props.results;
+  return (
+    <div>
+      <h2>Test Summary</h2>
+      <table>
+        <caption>Response Time</caption>
+        <tbody>
+          <tr>
+            <th></th>
+            <th>Normal</th>
+            <th>All</th>
+          </tr>
+          <tr>
+            <th>Mean time (ms):</th>
+            <td>{meanRT(data, isNormalRT)}</td>
+            <td>{meanRT(data, isRT)}</td>
+          </tr>
+          <tr>
+            <th>Median time (ms):</th>
+            <td>{medianRT(data, isNormalRT)}</td>
+            <td>{medianRT(data, isRT)}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <caption>Misses</caption>
+        <tbody>
+          <tr>
+            <th>Number of lapses:</th>
+            <td>{lapseCount(data)}</td>
+          </tr>
+          <tr>
+            <th>Number of false starts:</th>
+            <td>{fsCount(data)}</td>
+          </tr>
+          <tr>
+            <th>Number of trials:</th>
+            <td>{data.length}</td>
+          </tr>
+          <tr>
+            <th>Test duration (s):</th>
+            <td>{getTestDuration()}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <caption>Metadata</caption>
+        <thead><tr>
+          <th>Subject</th><th>Date</th>
+          </tr></thead>
+        <tbody><tr>
+          <td>{props.userName}</td>
+          <td>{props.testStart.toLocaleString()}</td>
+          </tr></tbody>
+      </table>
+      </div>
+  )
 }
 
 export default DataSummary;
