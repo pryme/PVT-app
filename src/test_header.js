@@ -1,56 +1,45 @@
 import React from 'react';
-import ChooseUser from './choose_user';
 
-class TestHeader extends React.Component {
-  // get subject info and adjust settings
-  constructor(props) {
-    super(props);
-    this.handleNameChange = this.handleNameChange.bind(this);
-    this.handleCommentChange = this.handleCommentChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    };
-  
-  handleNameChange(e) {
-    this.props.onNameChange(e.target.value);
+function TestHeader(props) {
+  const handleNameChange = (e) => {
+    props.onNameChange(e.target.value);
   }
   
-  handleCommentChange(e) {
-    this.props.onCommentChange(e.target.value);
+  const handleCommentChange = (e) => {
+    props.onCommentChange(e.target.value);
   }
   
-  handleSubmit(e) {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    this.props.onSubmit()
+    props.onSubmit()
   }
 
-  render() {
-    return(
-      <div className="TestHeader">
-        <form onSubmit={this.handleSubmit}>
-          <p>Please enter or update your info below:</p>
-          <input 
-            type="text" 
-            placeholder="Test subject name"
-            onChange={this.handleNameChange}
-            value={this.props.userName}
-            name="userName"
-          /> 
-          <br/>
-          <textarea 
-            rows={4}
-            placeholder="Comments"
-            onChange={this.handleCommentChange}
-            value={this.props.userComment}
-          />
-          <br />
-          <input
-            type="submit"
-            value="Proceed to testing"
-          />
-        </form>
-      </div>
-    );          
-  }
+  return(
+    <div className="TestHeader">
+      <form onSubmit={handleSubmit}>
+        <p>Please enter or update your info below:</p>
+        <input 
+          type="text" 
+          placeholder="Test subject name"
+          onChange={handleNameChange}
+          value={props.userName}
+          name="userName"
+        /> 
+        <br/>
+        <textarea 
+          rows={4}
+          placeholder="Comments"
+          onChange={handleCommentChange}
+          value={props.userComment}
+        />
+        <br />
+        <input
+          type="submit"
+          value="Proceed to testing"
+        />
+      </form>
+    </div>
+  );          
 }
 
 export default TestHeader;
