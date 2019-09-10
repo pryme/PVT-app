@@ -5,7 +5,7 @@ import React from 'react';
 
 // is argument already a value in LS? (string compare )
 // returns true if value exists
-function valueInLS(value, caseSensitive=false) {
+export  function valueInLS(value, caseSensitive=false) {
   let result = false;
   const lsKeys = Object.keys(localStorage);  // array of keys
   lsKeys.forEach(function(key) {
@@ -18,7 +18,7 @@ function valueInLS(value, caseSensitive=false) {
 }
 
 // add a new user to LS 
-function addNewUser(name) {
+function addNewUserToLS(name) {
   let result = false;
   if (name.length > 1) {  // avoid blank
     let numUsers = localStorage.length;  // 1 record / user
@@ -44,7 +44,7 @@ function AddNewUser(props) {
     const lastName = e.target.lastName.value.trim();
     const fullName = firstName + " " + lastName;
     let isNew = !valueInLS(fullName);
-    if (isNew) {addNewUser(fullName);}
+    if (isNew) {addNewUserToLS(fullName);}
     // this callback passes up the name, and also resets AddNew flag
     props.cb(fullName);  
     //alert("AddNewUser.onSubmit: Go to Comments / Proceed");
