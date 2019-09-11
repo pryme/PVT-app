@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { userInLS, getLsKeys, addNewUserToLS, 
+  isAvailable,  } from './storage-fn';
 
 // Refactor to functional component.
 function DataSummary(props) {
@@ -55,9 +57,10 @@ function DataSummary(props) {
   }
 
   /************************************************ */
+  // should we be using `state` here?
   const data = props.results;
   let testObj = {  // object to collect test results
-    datetime: props.testStart.toLocaleString(),
+    datetime: props.testStart,  // note: Date() obj
     duration: getTestDuration(),
     trials: data.length,
     lapses: lapseCount(data),
@@ -74,7 +77,12 @@ function DataSummary(props) {
     }
   };    
   /************************************************ */
+  // write the data summary to localStorage with effect
+  useEffect(() => {
 
+  }); 
+
+  /************************************************ */
   return (
     <div>
       <h2>Test Summary</h2>
@@ -128,7 +136,7 @@ function DataSummary(props) {
           </tr></thead>
         <tbody><tr>
           <td>{props.userName}</td>
-          <td>{testObj.datetime}</td>
+          <td>{testObj.datetime.toLocaleString()}</td>
           </tr></tbody>
       </table>
       </div>
