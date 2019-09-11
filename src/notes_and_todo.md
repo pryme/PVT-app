@@ -22,6 +22,36 @@
 * Gaming mouse? (check prices of gaming mice)a
 * Does "reset all" restore default settings? Should it?
 
+# Thoughts on saving data
+## Summarized data
+* Might be good to just create a data object for summarized data. Abstracting the elements from current rev of the app we have:
+    * Mean RT (over set of 'normal' and set of 'all' values).
+    * Median RT (over set of 'normal' and set of 'all' values).
+    * Number of lapses; number of false starts.
+    * Number of trials.
+    * Test duration.
+    * Subject name.
+    * Test datetime.
+* The test results page currently also shows the individual readings, but I think I will not store these, at least for now.
+* So for JS object format:
+    * Object to be stored is named `userTests`.
+    * userTests = {
+        T1: {
+            datetime: Date, duration: seconds, trials: count, lapses: numLapses, falseStarts: numFalses, RT: {
+                mean: {normal: normRT, all: allRT},
+                median: {normal: normRT, all: allRT}
+            }
+        },
+        T2: {
+            datetime: Date, duration: seconds, trials: count, lapses: numLapses, falseStarts: numFalses, RT: {
+                mean: {normal: normRT, all: allRT},
+                median: {normal: normRT, all: allRT}
+            }
+        }
+    }
+
+
+
 # Structure of app:
 * App runs one test consisting of 1-to-many ResponseTimer measurements
 * One ResponseTimer measurement is:

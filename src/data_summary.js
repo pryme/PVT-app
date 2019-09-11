@@ -53,7 +53,28 @@ function DataSummary(props) {
     let duration = now.getTime() - props.testStart.getTime();  // ms
     return(Math.round(duration / 1000));  // seconds
   }
+
+  /************************************************ */
   const data = props.results;
+  let testObj = {  // object to collect test results
+    datetime: props.testStart.toLocaleString(),
+    duration: getTestDuration(),
+    trials: data.length,
+    lapses: lapseCount(data),
+    falseStarts: fsCount(data),
+    RT: {
+      mean: {
+        normal: meanRT(data, isNormalRT), 
+        all: meanRT(data, isRT)
+      },
+      median: {
+        normal: medianRT(data, isNormalRT),
+        all: medianRT(data, isRT)
+      }
+    }
+  };    
+  /************************************************ */
+
   return (
     <div>
       <h2>Test Summary</h2>
@@ -67,13 +88,13 @@ function DataSummary(props) {
           </tr>
           <tr>
             <th>Mean time (ms):</th>
-            <td>{meanRT(data, isNormalRT)}</td>
-            <td>{meanRT(data, isRT)}</td>
+            <td>{testObj.RT.mean.normal}</td>
+            <td>{testObj.RT.mean.all}</td>
           </tr>
           <tr>
             <th>Median time (ms):</th>
-            <td>{medianRT(data, isNormalRT)}</td>
-            <td>{medianRT(data, isRT)}</td>
+            <td>{testObj.RT.median.normal}</td>
+            <td>{testObj.RT.median.all}</td>
           </tr>
         </tbody>
       </table>
@@ -83,19 +104,19 @@ function DataSummary(props) {
         <tbody>
           <tr>
             <th>Number of lapses:</th>
-            <td>{lapseCount(data)}</td>
+            <td>{testObj.lapses}</td>
           </tr>
           <tr>
             <th>Number of false starts:</th>
-            <td>{fsCount(data)}</td>
+            <td>{testObj.falseStarts}</td>
           </tr>
           <tr>
             <th>Number of trials:</th>
-            <td>{data.length}</td>
+            <td>{testObj.trials}</td>
           </tr>
           <tr>
             <th>Test duration (s):</th>
-            <td>{getTestDuration()}</td>
+            <td>{testObj.duration}</td>
           </tr>
         </tbody>
       </table>
@@ -107,7 +128,7 @@ function DataSummary(props) {
           </tr></thead>
         <tbody><tr>
           <td>{props.userName}</td>
-          <td>{props.testStart.toLocaleString()}</td>
+          <td>{testObj.datetime}</td>
           </tr></tbody>
       </table>
       </div>
