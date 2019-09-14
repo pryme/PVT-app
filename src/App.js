@@ -12,6 +12,7 @@ import TestFooter from './test_footer';
 import AddNewUser from './add_new_user'
 import ChooseUser from './choose_user';
 import StimulusDisplay from './stimulus_display';
+import { TestgetKeyForUser } from './storage-fn';
 
 function App() {
   // stage of PVT test state machine (get_user, header, ready, running, done, settings)
@@ -143,6 +144,7 @@ function App() {
           <DataSummary 
             results={results}
             userName={userName}
+            userComment={userComment}
             testStart={testStart}
             lapseThresh={settings.lapseThresh}
             validThresh={settings.validThresh}

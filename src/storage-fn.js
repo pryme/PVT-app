@@ -6,6 +6,28 @@ import { isArray } from 'util';
  * Utility functions for using local storage.
  ***************************************************************/
 
+// Returns the LS key for a userName or null if missing
+export function getKeyForUser(uN) {
+  let result = null;  // return null if uN not found
+  let uNTrimmed = uN.trim();
+  try {
+    const lsKeys = Object.keys(localStorage);  // array of keys like 'U1, U2, ...'
+    lsKeys.forEach(function(key) {
+      let obj = JSON.parse(localStorage.getItem(key));
+      // make sure we only use this app's data
+      if (obj.hasOwnProperty("userName")) {
+        if (obj.userName.trim().toUpperCase() === uNTrimmed.toUpperCase()) {
+          result = key;
+        }
+      }
+    });
+    return result;
+  }
+  catch(err) {
+    console.error(err);
+  }
+}
+
 // Returns true if un exists as userName in localStorage
 export function userInLS(un, caseSensitive=false) {
   // TODO caseSensitive not implemented
@@ -120,7 +142,7 @@ export function TestAddUser() {
 }
 
 /* functional component to indicate availability status */
-export default function TestLSButton() {
+export  function TestLSButton() {
   const [col, setCol] = useState('gray');
   const [sizeMsg, setSizeMsg] = useState('');
   const test = () => {
@@ -176,6 +198,23 @@ export function TestUserInLS() {
       <input type="text" id="test1"  ></input>
       <button onClick={check}>Check name</button>
       <p id="test1Result"></p>
+    </div>
+  );
+}
+
+// functional component for test only
+export function TestgetKeyForUser() {
+  const check = () => {
+    let name = document.getElementById("test2").value;
+    let key = getKeyForUser(name);
+    let result = "Found key: " + key;
+    document.getElementById("test2Result").innerHTML=result;
+  }
+  return (
+    <div>
+      <input type="text" id="test2"  ></input>
+      <button onClick={check} >Check name</button>
+      <p id="test2Result">result p</p>
     </div>
   );
 }

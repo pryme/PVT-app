@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
-import { userInLS, getLsKeys, addNewUserToLS, 
-  isAvailable,  } from './storage-fn';
+import { isAvailable, getKeyForUser, } from './storage-fn';
 
 // Refactor to functional component.
 function DataSummary(props) {
@@ -61,6 +60,7 @@ function DataSummary(props) {
   const data = props.results;
   let testObj = {  // object to collect test results
     datetime: props.testStart,  // note: Date() obj
+    comments: props.userComment,
     duration: getTestDuration(),
     trials: data.length,
     lapses: lapseCount(data),
@@ -77,10 +77,21 @@ function DataSummary(props) {
     }
   };    
   /************************************************ */
-  // write the data summary to localStorage with effect
+  //write the data summary to localStorage with effect
   useEffect(() => {
-
-  }); 
+    if (isAvailable('localStorage')) {
+      const key = getKeyForUser(props.userName);
+      if (key !== null) {
+        let userObj = JSON.parse(localStorage.getItem(key)); 
+        // TODO testNum not robust if existing testIDs could be deleted
+        let testNum = 1 + Object.keys(userObj.userTests).length;
+        let testID = "T" + testNum;
+        userObj.userTests[testID] = testObj;
+        localStorage.setItem(key, JSON.stringify(userObj));
+        console.log(userObj);
+      }
+    }
+  }, []); 
 
   /************************************************ */
   return (

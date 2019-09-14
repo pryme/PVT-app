@@ -1,17 +1,8 @@
 # TODO:
-* Save data, recall historical data, export data:
-    * Assume saving JSON stringified data
-    * What to save? Ideas:
-        * User ID (unique) (1st key)
-            * User name ('firstName' + ' ' + 'lastName')
-            * User preferred settings
-            * User tests:
-                * UID-timestamp (2nd key): JSON object string
-                * UID-timestamp (2nd key): JSON object string
-                * UID-timestamp (2nd key): JSON object string
-    * What form for test data?:
-        * {UID-timestamp: {UserInfo: {}, RTdata: {}, Analytics: {} }}
-
+* How to save user settings?
+    * There is one userSettings object in storage:
+        * either empty or with most recent settings values
+    * 
 
 
 * Graph data?
