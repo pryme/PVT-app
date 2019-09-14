@@ -1,8 +1,6 @@
 # TODO:
-* How to save user settings?
-    * There is one userSettings object in storage:
-        * either empty or with most recent settings values
-    * 
+* Delete the saving of settings with user data.
+
 
 
 * Graph data?
@@ -12,6 +10,16 @@
 * Evaluate effect of clamscan running concurrently
 * Gaming mouse? (check prices of gaming mice)a
 * Does "reset all" restore default settings? Should it?
+
+# Thoughts on saving settings
+* Should I change the model for settings? Currently the settings object has 4 properties (testDuration, maxWait, validThresh, lapseThresh). 
+* Certainly arguable that at least the last 3 props should not routinely be available for user adjustment.
+* So maybe a better model is:
+    * Have the app always start with fixed default settings, optimized by the developer.
+    * Allow adjustment of these settings during a session (until page reloads). This will be primarily for development use.
+    * Don't save the set of settings with a user in LS. The last 3 properties and the actual test duration are saved in test results anyway, so it seems rather pointless to save them as a characteristic of a user.
+
+
 
 # Thoughts on saving data
 ## Summarized data
@@ -30,13 +38,15 @@
         T1: {
             datetime: Date, duration: seconds, trials: count, lapses: numLapses, falseStarts: numFalses, RT: {
                 mean: {normal: normRT, all: allRT},
-                median: {normal: normRT, all: allRT}
+                median: {normal: normRT, all: allRT}, 
+                settings: {maxWait: val, validMs: val, lapseMs: val}
             }
         },
         T2: {
             datetime: Date, duration: seconds, trials: count, lapses: numLapses, falseStarts: numFalses, RT: {
                 mean: {normal: normRT, all: allRT},
-                median: {normal: normRT, all: allRT}
+                median: {normal: normRT, all: allRT}, 
+                settings: {maxWait: val, validMs: val, lapseMs: val}
             }
         }
     }

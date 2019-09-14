@@ -74,6 +74,11 @@ function DataSummary(props) {
         normal: medianRT(data, isNormalRT),
         all: medianRT(data, isRT)
       }
+    },
+    settings: {
+      maxWait: props.maxWait,
+      validMs: props.validThresh,
+      lapseMs: props.lapseThresh
     }
   };    
   /************************************************ */

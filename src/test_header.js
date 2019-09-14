@@ -30,7 +30,6 @@ function TestHeader(props) {
           rows={4}
           placeholder="Comments"
           onChange={handleCommentChange}
-          //value={props.userComment}
         />
         <br />
         <input

@@ -113,13 +113,6 @@ function App() {
         pane = 
           <div>
 {/********************************************
-          <ResponseTimer cb={this.rtDoneCB}
-            maxWait={this.state.settings.maxWait}
-          />
-******************************************/}
-          { /* <ResponseTimer countBy={10} startDelay={2000} cb={this.rtDoneCB} /> */}
-
-{/********************************************
           Make StimulusDisplay the main element for timer display.
 ******************************************/}
           <StimulusDisplay cb={rtDoneCB} maxWait={settings.maxWait} />
@@ -148,6 +141,7 @@ function App() {
             testStart={testStart}
             lapseThresh={settings.lapseThresh}
             validThresh={settings.validThresh}
+            maxWait={settings.maxWait}
             />
         {/*}    
           <div className="controls">

@@ -25,7 +25,6 @@ function addNewUserToLS(name) {
     let userID = "U" + (numUsers + 1);  // first user is ID 1, then integers
     let userObj = {
       userName: name,
-      userSettings: {},
       userTests: {}
     };
     localStorage.setItem(userID, JSON.stringify(userObj));
