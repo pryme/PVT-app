@@ -1,6 +1,15 @@
 # TODO:
-* Delete the saving of settings with user data.
-
+* Editor for saved data? Comment editor only?
+* Display utility for saved data belonging to one user?
+* Aggregation of saved data (different reps) for one user
+* Maybe all above combined:
+    * Form with drop-down for user name
+    * Selection of user name displays:
+        * scrollable table of test results
+        * certain aggregates of those results?
+        * filterable?
+        * sortable?
+    * Or maybe, user is selected in current page, but instead of clicking 'Submit' to start test, you click 'View data' to view the above properties?
 
 
 * Graph data?
