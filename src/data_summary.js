@@ -59,7 +59,9 @@ function DataSummary(props) {
   // should we be using `state` here?
   const data = props.results;
   let testObj = {  // object to collect test results
-    datetime: props.testStart,  // note: Date() obj
+    unixtime: props.testStart.getTime(),  // ms since epoch
+    date: props.testStart.toLocaleDateString(),
+    time: props.testStart.toLocaleTimeString(),
     comments: props.userComment,
     duration: getTestDuration(),
     trials: data.length,
@@ -152,7 +154,8 @@ function DataSummary(props) {
           </tr></thead>
         <tbody><tr>
           <td>{props.userName}</td>
-          <td>{testObj.datetime.toLocaleString()}</td>
+          <td>{testObj.date}</td>
+          <td>{testObj.time}</td>
           </tr></tbody>
       </table>
       </div>

@@ -13,6 +13,7 @@ import AddNewUser from './add_new_user'
 import ChooseUser from './choose_user';
 import StimulusDisplay from './stimulus_display';
 import { TestgetKeyForUser } from './storage-fn';
+import { ViewData } from './view_data';
 
 function App() {
   // stage of PVT test state machine (get_user, header, ready, running, done, settings)
@@ -77,11 +78,15 @@ function App() {
     }
   }
   // callback for ChooseUser name selection
-  const namePickCB = (pick)  => {
+  const namePickCB = (pick, action)  => {
     // pick is name selected from dropdown
-    //alert("Go to Comments / Proceed with user: " + pick);
     setUserName(pick);
-    setTestStage("header");
+    if (action === "runTest") {
+      setTestStage("header");
+    } else {  // viewData
+      setTestStage("viewData");
+      console.log("Setting testStage to viewData");
+    }
   }
 
   let pane;  // what to show
@@ -154,6 +159,11 @@ function App() {
       pane =<Settings settings={settings}
         cb={changeSettingsCB}
       />;
+      break;
+    case "viewData":
+      pane=<div>
+        <ViewData userName={userName} />
+      </div>;
       break;
     default:
       pane = null;

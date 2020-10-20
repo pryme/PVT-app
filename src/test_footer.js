@@ -38,6 +38,12 @@ function TestFooter(props) {
               onClick={props.showSettingsCB}/>
           </div>
       );
+    case "viewData":
+      return (
+        <div>
+          <Button name="Reset" onClick={props.resetAllCB}/>
+        </div>
+      );
       break;
     default:
       return null;
