@@ -16,6 +16,7 @@ function ResponseTimer(props) {
   const [total, setTotal] = useState(null);  // ms
   const [increment, setIncrement] = useState(null);  // ms
   const savedCallback = useRef();
+  const startStop = useRef([]);  // temp for debug; array of start, stop Unix times (ms)
 
   useEffect(() => {
     //savedCallback.current = callback;
@@ -28,6 +29,7 @@ function ResponseTimer(props) {
     }
     if (increment !== null) {
       let id = setInterval(tick, increment);
+      startStop.current = ((a) => [...a, Date.now().toString()])(startStop.current);  // debug TODO
       return(
         () => {
           clearInterval(id);  // clean up tick
@@ -59,6 +61,9 @@ function ResponseTimer(props) {
     props.cb(true, total);  // sent done signal and data
     if (increment !== null) {
       setIncrement(null);  // reset after valid response
+      startStop.current = ((a) => [...a, Date.now().toString()])(startStop.current);  // debug TODO
+      console.log(startStop.current[1] - startStop.current[0]);  // stop time; debug TODO
+      
     } else {
       props.cb(false, null);  // allow new timer to launch
     }

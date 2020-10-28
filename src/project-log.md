@@ -7,8 +7,9 @@
 
 ## TODO - immediate:
 
--[ ] Decide what to do with unsaved changes in working tree and clean up git.
--[ ] Decide objectives
+-[x] Decide what to do with unsaved changes in working tree and clean up git.
+  * decided to commit these changes since the app is working more or less as well as I remember.
+-[x] Decide objectives
 
 ## Objectives
 
@@ -56,7 +57,48 @@ So I guess first action here is to search for what light sensors, accelerometers
   * Decide whether to worry about offset between final displayed prompt value and recorded counter value by running several trials with slow-mo video and comparing final display value to recorded value.
   * Measure latency between physical mouse click and final counter value with slow-mo video. If counter is reasonably accurate, you can just use counter display, as long as you can determine mouse click from video.
 
+## How does ResponseTimer work again?
 
+I don't remember how it works. Maybe need to build a simple test project first to re-learn. After that figure out accuacy and latency.
+
+# 2020-10-28
+
+I haven't been keeping daily notes, but I worked a lot on this over the last 7-8 days. I'm going to summarize the most important findings here before I continue.
+
+## Accuracy of the ms timer is a big concern
+
+First, I built a simplified React version of just a timer with a couple of buttons with no styling and no extra components. I got significantly faster RT measurements, then realized that this probably meant that the "clock" was actually counting *slower*. And I found some bugs that pointed in that direction. 
+
+Then I realized that I had built the "clock" after the pattern of a common online React intro example. In this pattern, `setInterval` is used to call at regular intervals a function which updates the total count. Of course this is stupid for a timer--errors will accumulate and will depend on the increment size and the total duration. So I switched to reading the system clock using `Date.now()` at the beginning and ending of the duration. And sure enough then I got RT values close to my original React app. 
+
+But I'm still concerned. First, published numbers indicate average RT on this sort of test is around 240 ms, plus perhaps 10 or so for my advanced age. With the React app, I'm consistently getting in the high 300s-low 400s. Of course I haven't accounted for mouse/display latency, but published data indicate these should not be more than about 30 ms. So it seems like my RT numbers are still suspiciously high by around 100 ms. Second, I found 2 or 3 sites that offer a simple reaction time test online. On all of these I get in the high 200s, which is much more consistent with published average numbers for adult males. 
+
+I tried to take React out of the equation by writing a separate JS script that runs a simple SRT test with two buttons and the system clock. I loaded it in the index.js page of the React app, which apparently suppressed all the React action. But with this scheme I still get high 300s for RT.
+
+I also tried the React simple app in production mode and it probably made a little improvement, but not enough. And the fact that it made any improvement at all makes me suspicious that a bottleneck still exists somewhere.
+
+Also tried rebooting, etc -- no effect detected.
+
+So where from here...I thought about trying Python, but it's a little bit of a setup hassle, especially to be able to grab mouse clicks, since I haven't Pythoned in quite a while.
+
+## Use a microcontroller to get a trustworthy RT measurement
+
+So I think what I'm going to do first is to make a separate microcontroller test to get the "ground truth" on my RT. Then I'll know how far off the browser versions are. I think I have everything needed to do this:
+  
+* Adafruit Playground Circuit Express
+* Membrane switch (low travel) that I can interface to the PCE
+* LED on the PCE to provide stimulus
+* Real time clock module if I need it
+  
+It will require some setup to enable programming of the uC. And I'll have to re-learn a little C++. But it probably won't be worse than the Python route. And the measurements should be much more reliable than the browser ones.
+
+## Other possibilities
+
+* I may not have found the best way to integrate separate JS or Python code with ReactJS. I haven't tried all the ways I've seen mentioned, and I probably don't understand some of those ways yet.
+* I could try replacing ReactJS with Svelte, an upcoming framework that claims some advantages that might help.
+
+
+-------------------------------------------------------------------
 # ARCHIVE: Below here are old notes previous episodes with this project
 
 ## TODO:
