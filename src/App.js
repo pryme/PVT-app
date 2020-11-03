@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import TestBox from './test_box';
+import TestManager from './test_manager';
 
 function App() {
   const [results, setResults] = useState([]);  // array of RTs from multiple runs
@@ -28,10 +28,13 @@ function App() {
   
   return (
     <div className="App">
-      <TestBox 
+      <TestManager
         duration={settings.testDuration}
         callback={cb}
         maxWait={settings.maxWait}
+        validThresh={settings.validThresh}
+        lapseThresh={settings.lapseThresh}
+        results={results}
       />
       <ul>{pane}</ul>
     </div>

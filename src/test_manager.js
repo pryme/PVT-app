@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ResponseTimer from './response_timer';
+import DataTable from './data_table';
+
 /*************************************************
  * Repeats response time trials for a given duration.
  * Includes the "start test" and "stop test" buttons.
@@ -24,7 +26,7 @@ function Button(props) {
   );
 }
   
-function TestBox(props) {
+function TestManager(props) {
   const [state, setState] = useState('ready');
   const durRef = useRef();
   
@@ -69,7 +71,14 @@ function TestBox(props) {
         );
       case 'done':
         return (
+          <>
           <>Test completed</>
+          <DataTable
+            results={props.results}
+            validThresh={props.validThresh}
+            lapseThresh={props.lapseThresh}
+          />
+          </>
           );
       default:
         throw new Error();
@@ -115,9 +124,8 @@ function TestBox(props) {
   return (
     <>
     {viewSelector(state)}
-    <div>{state}</div>
     </>
   );
 }
 
-export default TestBox;
+export default TestManager;
