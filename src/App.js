@@ -1,188 +1,41 @@
-import React, { Component, useState } from 'react';
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
 import './App.css';
-import Button from './button';
-import TestHeader from './test_header';
-import ProgressBar from './progress_bar';
-import DataTable from './data_table';
-import ErrorBoundary from './error_boundary';
-import DataSummary from './data_summary';
-import Settings from './settings';
-import TestFooter from './test_footer';
-import AddNewUser from './add_new_user'
-import ChooseUser from './choose_user';
-import StimulusDisplay from './stimulus_display';
-import { TestgetKeyForUser } from './storage-fn';
-import { ViewData } from './view_data';
+import TestBox from './test_box';
 
 function App() {
-  // stage of PVT test state machine (get_user, header, ready, running, done, settings)
-  const [testStage, setTestStage] = useState("get_user");
-  const [rtDone, setRtDone] = useState(false);  // response timer finished?
-  const [testStart, setTestStart] = useState(new Date())  // mark start of test duration
-  const [results, setResults] = useState([]);
-  const [userName, setUserName] = useState(null);
-  const [userComment, setUserComment] = useState("");
-  const [settings, setSettings] = useState(
-    { testDuration: 300 * 1000,  // milliseconds
-      maxWait: 10,  // seconds; max delay before stimulus starts
-      validThresh: 100,  // milliseconds; RT > thresh is valid
-      lapseThresh: 500  // milliseconds; RT > thresh is lapse
-    }
-  );
-
-  let durationID;
-  const handleStartClick = () => {  // start the test
-    setTestStage("running");
-    setRtDone(false);
-    setTestStart(new Date());
-    setResults([]);
-    durationID = setTimeout(  // for test duration
-      () => handleStopClick(), settings.testDuration
-    );
+  const [results, setResults] = useState([]);  // array of RTs from multiple runs
+  const [settings, setSettings] = useState({
+    testDuration: 30 * 1000,  // milliseconds
+    maxWait: 10,  // seconds; max delay before stimulus
+    validThresh: 100,  // milliseconds; RT > thresh is valid
+    lapseThresh: 500,  // milliseconds; RT > thresh is lapse
+  });
+  
+  /************************************************************************** 
+   * Callback to pass to ResponseTimer.
+   * Updating the array is tricky; see https://medium.com/javascript-in-plain-english/how-to-add-to-an-array-in-react-state-3d08ddb2e1dc
+  **************************************************************************/
+  function cb(val) {
+    setResults(results => [...results, val]);  // add the new value to the array
   }
 
-  const handleStopClick = () => {  // need to sort which button
-    setTestStage("done");
-    clearTimeout(durationID);
+  let pane = <li>no results here</li>;
+  if (results.length > 0) {
+    pane = results.map( (item, index) => (
+      <li key={index}>{item}</li>
+    ));
   }
-  const handleNameChange = (text) => {
-    setUserName(text);
-  }
-  const handleCommentChange = (text) => {
-    setUserComment(text);
-  }
-  const handleHeaderSubmit = () => {
-    setTestStage("ready");
-  }
-  const handleResetAll = () => {
-    setTestStage("get_user");
-  }
-  const rtDoneCB = (status, result) => {
-    setRtDone(status);
-    if (status) {  // called from ResponseTimer.cleanup()
-      // need to save response time data
-      let newResults = results.slice();  // copy
-      newResults.push(result);  // append new measurement
-      setResults(newResults);
-    }
-  }
-  const changeSettingsCB = (obj) => {
-    setSettings(obj);
-  }
-  const showSettingsCB = () => {
-    if (testStage === "settings") {
-      setTestStage("header");
-    } else {
-      setTestStage("settings");
-    }
-  }
-  // callback for ChooseUser name selection
-  const namePickCB = (pick, action)  => {
-    // pick is name selected from dropdown
-    setUserName(pick);
-    if (action === "runTest") {
-      setTestStage("header");
-    } else {  // viewData
-      setTestStage("viewData");
-      console.log("Setting testStage to viewData");
-    }
-  }
-
-  let pane;  // what to show
-  switch (testStage) {
-    case "get_user":
-      pane = 
-        <ChooseUser 
-          cb={namePickCB}
-          />
-      break;
-    case "header":
-      pane = 
-        <TestHeader 
-          userName={userName}
-          onNameChange={handleNameChange}
-          userComment={userComment}  
-          onCommentChange={handleCommentChange}
-          onSubmit={handleHeaderSubmit}
-        />
-      break;
-    case "ready":
-      pane = 
-        <div className="controls">
-        <Button name="Start Test" onClick={handleStartClick}/>
-        </div>
-      break;
-    case "running":
-      if (!rtDone) {
-        pane = 
-          <div>
-{/********************************************
-          Make StimulusDisplay the main element for timer display.
-******************************************/}
-          <StimulusDisplay cb={rtDoneCB} maxWait={settings.maxWait} />
-
-
-          <ProgressBar duration={settings.testDuration} 
-            start={testStart}/>
-          <div className="controls">
-            <Button name="Stop Test" onClick={handleStopClick}/>
-          </div>
-          </div>;  
-      } else {pane = null;}
-      break;
-    case "done":
-      pane = 
-        <div>
-          <DataTable 
-            results={results}
-            validThresh={settings.validThresh}
-            lapseThresh={settings.lapseThresh}
-            />
-          <DataSummary 
-            results={results}
-            userName={userName}
-            userComment={userComment}
-            testStart={testStart}
-            lapseThresh={settings.lapseThresh}
-            validThresh={settings.validThresh}
-            maxWait={settings.maxWait}
-            />
-        {/*}    
-          <div className="controls">
-            <Button name="Start Test" onClick={this.handleStartClick}/>
-          </div>
-    */}
-        </div>;  
-      break;
-    case "settings":
-      pane =<Settings settings={settings}
-        cb={changeSettingsCB}
-      />;
-      break;
-    case "viewData":
-      pane=<div>
-        <ViewData userName={userName} />
-      </div>;
-      break;
-    default:
-      pane = null;
-  }
-
+  
   return (
     <div className="App">
-      <h1>Psychomotor Vigilance Test</h1>
-      <h2>Experimental</h2>
-      {pane}
-      <TestFooter resetAllCB={handleResetAll}
-        testStage={testStage}
-        showSettingsCB={showSettingsCB}
-        changeSettingsCB={changeSettingsCB}
+      <TestBox 
+        duration={settings.testDuration}
+        callback={cb}
+        maxWait={settings.maxWait}
       />
-      <h2>==== test below ====</h2>
+      <ul>{pane}</ul>
     </div>
   );
-
 }
 
 export default App;

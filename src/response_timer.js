@@ -1,91 +1,50 @@
-import React, { useState, useEffect, useRef } from 'react';
-// following is not needed TODO 
-//import StimulusDisplay from './stimulus_display';
+import React, {useState, useEffect, useRef} from 'react';
 
-/***************************************************
- * Refactoring this into a functional component using hooks.
- * 
- * Simple up-counter with:
- *    * count increment is parametric number of ms
- *    * output value is ms
- *    * starts at 0
- *    * starts automatically after parametric delay after render
- **************************************************/
+/************************************
+ * Timer that waits props.delay ms, displaying an instruction prompt.
+ * When delay expires, records a start time and displays a stimulus.
+ * On mouse down, stops timing and calls props.callback.
+ * If mouse down during initial delay returns -1.
+*************************************/
 
 function ResponseTimer(props) {
-  const [total, setTotal] = useState(null);  // ms
-  const [increment, setIncrement] = useState(null);  // ms
-  const savedCallback = useRef();
-  const startStop = useRef([]);  // temp for debug; array of start, stop Unix times (ms)
-
+  const timeoutRef = useRef();  // so click handler can clear delay timer
+  const startStop = useRef([]);  // TODO debug; array of start, stop times from Date.now
+  const [timingStarted, setTimingStarted] = useState(false);
+  
+  // delay before showing stimulus
   useEffect(() => {
-    //savedCallback.current = callback;
-    savedCallback.current = () => setTotal(total + increment);
-  });
+    const tid = setTimeout(() => {
+      setTimingStarted(true);
+      startStop.current = [Date.now().toString()];  // start of response time
 
-  useEffect(() => {
-    function tick() {
-      savedCallback.current();
-    }
-    if (increment !== null) {
-      let id = setInterval(tick, increment);
-      startStop.current = ((a) => [...a, Date.now().toString()])(startStop.current);  // debug TODO
-      return(
-        () => {
-          clearInterval(id);  // clean up tick
-          props.cb(false, null);  // allow new timer to launch
-        }
-      ) 
-    }
-  }, [increment]);
+    }, props.delay);
+    timeoutRef.current = tid;
+    return(() => {clearTimeout(tid);})  // cleanup
+  }, [props.delay]); 
 
-  useEffect(() => {
-    if (increment === null) {
-      let tid = setTimeout(() => {
-        setIncrement(props.countBy);
-      }, props.startDelay);
-      return () => clearTimeout(tid);
-    }
-  });
-
-  function handleStop() {
-    setIncrement(null);
-    props.cb(true, total);  // sent done signal and data
+  function handleMouseDown() {
+    clearTimeout(timeoutRef.current);  // in case delay still running (false start)
+    let delta = -1;
+    if (startStop.current.length > 0) {
+      startStop.current = ((a) => [...a, Date.now().toString()])(startStop.current);  // add end of response interval
+      delta = startStop.current[1] - startStop.current[0];  
+    } 
+    props.callback(delta);  // -1 means false start
+    setTimingStarted(false);  // ready for new trial
+    startStop.current = [];  // ready for new trial
   }
-
-  function handleStart() {
-    setTimeout(() => setIncrement(props.countBy), props.startDelay);
-  }
-
-  function handleClick() {
-    props.cb(true, total);  // sent done signal and data
-    if (increment !== null) {
-      setIncrement(null);  // reset after valid response
-      startStop.current = ((a) => [...a, Date.now().toString()])(startStop.current);  // debug TODO
-      console.log(startStop.current[1] - startStop.current[0]);  // stop time; debug TODO
-      
-    } else {
-      props.cb(false, null);  // allow new timer to launch
-    }
-  }
-
-  const msg = 
-     <p style={{fontSize: "20px"}} className="stimulus-text">Stop the counter by clicking in the rectangle</p>
-  if (total === null) {
-    return (
-      <div id="response-timer"  onClick={handleClick}>
-       <h1 className="stimulus-text-hidden">0</h1>
-       {msg}
-      </div>
-    );
-  } else {
-    return (
-      <div id="response-timer" onClick={handleClick}>
-       <h1>{total}</h1>
-       {msg}
-      </div>
-    );
-  }
+  const msg = <p>Stop the counter by clicking on it.</p>
+  let p = <h1>_</h1>;  // TODO: can improve display with CSS
+  if (timingStarted) p = <h1>Click!</h1>
+  return (
+    <>
+    <div onMouseDown={handleMouseDown}>
+      {p}
+      {msg}
+    </div>
+    </>
+  );
 }
 
 export default ResponseTimer;
