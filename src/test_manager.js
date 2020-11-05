@@ -48,7 +48,7 @@ function TestManager(props) {
   }, [state]);
 
   function RTCallback(val) {
-    props.cbRT(val);
+    props.cbRT(val);  // send data to parent
     setState('RT-finished');
   }
 
@@ -92,6 +92,7 @@ function TestManager(props) {
     switch (state) {
       case 'ready':
         setState('RT-started');
+        props.setTestStart(new Date());
         break; 
       case 'RT-started':
         break;  // nothing to do
@@ -125,9 +126,9 @@ function TestManager(props) {
   }
 
   return (
-    <>
+    <div className="stimulus">
     {viewSelector(state)}
-    </>
+    </div>
   );
 }
 

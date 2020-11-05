@@ -62,6 +62,7 @@ function App() {
 
   const handleResetAll = () => {
     setAppState("getUser");
+    setResults([]);  // clear out old results
   }
 
   const showSettingsCB = () => {
@@ -100,9 +101,7 @@ function App() {
         </>
       break;
     case "doTest":
-      // TODO: progress bar doesn't work right
-      // maybe it should be component of 
-      // TestManager?
+      // TODO: ProgressBar better as part of TestManager
       mainPane = 
         <>
         <TestManager
@@ -110,6 +109,7 @@ function App() {
         cbRT={cbRT}
         maxWait={settings.maxWait}
         cbTM={cbTM}
+        setTestStart={setTestStart}
         />
         <ProgressBar 
           duration={settings.testDuration} 
@@ -161,11 +161,12 @@ function App() {
       <li key={index}>{item}</li>
     ));
   }
+  testPane = <li>{testStart.getTime()}</li>;
 
   return (
     <div className="App">
       <h1>Psychomotor Vigilance Test</h1>
-      <h2>Experimental</h2>
+      <h2>(Under development)</h2>
       {mainPane}
       
       <TestFooter 

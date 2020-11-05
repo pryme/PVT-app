@@ -32,7 +32,6 @@ function ChooseUser(props) {
       );
     return(
       <div>
-        <h1>Choose User</h1>
         <form onSubmit={onSelectSubmit} >
           <p>Choose your name from the list:</p>
             <select name="list">    
