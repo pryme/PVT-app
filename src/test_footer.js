@@ -2,11 +2,11 @@ import React from 'react';
 import Button from './button';
 
 function TestFooter(props) {
-  switch (props.testStage) {
-    case "get_user":
+  switch (props.appState) {
+    case "getUser":
       return null;
       break;
-    case "header":
+    case "getTestInfo":
       return(
           <div>
               <Button name="Reset" onClick={props.resetAllCB}/>
@@ -14,31 +14,28 @@ function TestFooter(props) {
           </div>
       );
       break;
-    case "ready":
+    case "doTest":
       return(
           <div>
               <Button name="Reset" onClick={props.resetAllCB}/>
           </div>
       );
       break;
-    case "running":
-      return null;
-      break;
-    case "done":
+    case "doReview":
       return(
           <div>
               <Button name="Reset" onClick={props.resetAllCB}/>
           </div>
       );
       break;
-    case "settings":
+    case "doSettings":
       return(
           <div>
               <Button name="Done with Settings" 
               onClick={props.showSettingsCB}/>
           </div>
       );
-    case "viewData":
+    case "manageData":
       return (
         <div>
           <Button name="Reset" onClick={props.resetAllCB}/>
@@ -48,7 +45,6 @@ function TestFooter(props) {
     default:
       return null;
   }
-
 }
 
 export default TestFooter;

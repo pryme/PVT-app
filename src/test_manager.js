@@ -38,6 +38,15 @@ function TestManager(props) {
     return(() => {clearTimeout(durId);}) // cleanup
   }, []);
   
+  /* This has to be here rather than in viewSelector so that parent state 
+   * doesn't change while this component is being rendered.
+   */
+  useEffect(() => {
+    if (state == 'done') {
+      props.cbTM(true);  // tell parent session is done
+    }
+  }, [state]);
+
   function RTCallback(val) {
     props.cbRT(val);
     setState('RT-finished');
@@ -69,7 +78,6 @@ function TestManager(props) {
           <div>RT-finished</div>
         );
       case 'done':
-        props.cbTM(true);  // tell parent test is done
         return (
           <>
           <>Test completed</>

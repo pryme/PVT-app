@@ -5,6 +5,10 @@ import ChooseUser from './choose_user';
 import TestHeader from './test_header';
 import DataTable from './data_table';
 import DataSummary from './data_summary';
+import TestFooter from './test_footer';
+import Settings from './settings';
+import ViewData from './view_data';
+import ProgressBar from './progress_bar';
 
 function App() {
   // states of App {getUser, getTestInfo, doTest, doReview, doSettings, manageData}
@@ -56,12 +60,27 @@ function App() {
     setAppState("doTest");
   }
 
+  const handleResetAll = () => {
+    setAppState("getUser");
+  }
+
+  const showSettingsCB = () => {
+    if (appState === "doSettings") {
+      setAppState("getTestInfo");
+    } else {
+      setAppState("doSettings");
+    }
+  }
+
+  const changeSettingsCB = (obj) => {
+    setSettings(obj);
+  }
+
   let mainPane;  // what to show based on appState
   switch (appState) {
     case "getUser":
       mainPane = 
         <>
-        <h2>== getUser ==</h2>
         <ChooseUser
           cb={namePickCB}
         />
@@ -71,7 +90,6 @@ function App() {
       // TODO: can't backtrack from this view
       mainPane = 
         <>
-        <h2>== getTestInfo ==</h2>
         <TestHeader
           userName={userName}
           onNameChange={handleNameChange}
@@ -82,22 +100,25 @@ function App() {
         </>
       break;
     case "doTest":
-      // TODO: need progress bar
+      // TODO: progress bar doesn't work right
+      // maybe it should be component of 
+      // TestManager?
       mainPane = 
         <>
-        <h2>== doTest ==</h2>
         <TestManager
         duration={settings.testDuration}
         cbRT={cbRT}
         maxWait={settings.maxWait}
         cbTM={cbTM}
         />
+        <ProgressBar 
+          duration={settings.testDuration} 
+          start={testStart}/>
         </>
       break;
     case "doReview":
       mainPane = 
         <>
-        <h2>== doReview ==</h2>
         <DataTable
           results={results}
           validThresh={settings.validThresh}
@@ -117,13 +138,16 @@ function App() {
     case "doSettings":
       mainPane = 
         <>
-        <h2>== doSettings ==</h2>
+        <Settings 
+          settings={settings}
+          cb={changeSettingsCB}
+        />
         </>
       break;
     case "manageData":
       mainPane = 
         <>
-        <h2>== manageData ==</h2>
+        <ViewData userName={userName} />
         </>
       break;
     default:
@@ -144,7 +168,12 @@ function App() {
       <h2>Experimental</h2>
       {mainPane}
       
-      <h3>TestFooter goes here</h3>
+      <TestFooter 
+        appState={appState}
+        resetAllCB={handleResetAll}
+        showSettingsCB={showSettingsCB}
+        changeSettingsCB={changeSettingsCB}
+      />
       <h2>==== test area below ====</h2>
       <ul>{testPane}</ul>
     </div>

@@ -46,3 +46,5 @@ export function ViewData(props) {
     </div>
   );
 }
+
+export default ViewData;
