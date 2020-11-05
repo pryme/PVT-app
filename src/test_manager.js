@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ResponseTimer from './response_timer';
-import DataTable from './data_table';
 
 /*************************************************
  * Repeats response time trials for a given duration.
@@ -39,8 +38,8 @@ function TestManager(props) {
     return(() => {clearTimeout(durId);}) // cleanup
   }, []);
   
-  function tbCallback(val) {
-    props.callback(val);
+  function RTCallback(val) {
+    props.cbRT(val);
     setState('RT-finished');
   }
 
@@ -61,7 +60,7 @@ function TestManager(props) {
           <>
           <Button name='Start Test' onClick={handleStartClick} />
           <Button name='Stop Test' onClick={handleStopClick} />
-          <ResponseTimer delay={wait} callback={tbCallback} />
+          <ResponseTimer delay={wait} callback={RTCallback} />
           </>
           );
       case 'RT-finished':
@@ -70,14 +69,10 @@ function TestManager(props) {
           <div>RT-finished</div>
         );
       case 'done':
+        props.cbTM(true);  // tell parent test is done
         return (
           <>
           <>Test completed</>
-          <DataTable
-            results={props.results}
-            validThresh={props.validThresh}
-            lapseThresh={props.lapseThresh}
-          />
           </>
           );
       default:
