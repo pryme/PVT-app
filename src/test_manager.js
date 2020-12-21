@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ResponseTimer from './response_timer';
+import ProgressBar from './progress_bar';
 
 /*************************************************
  * Repeats response time trials for a given duration.
@@ -64,12 +65,15 @@ function TestManager(props) {
           );
       case 'RT-started':
         // the delay before showing stimulus
-        let wait = 1000 * (2 + Math.floor(Math.random() * (props.maxWait - 2)));
+        let wait = 2000 + Math.floor(Math.random() * (props.maxWait - 2)*1000);
         return (
           <>
           <Button name='Start Test' onClick={handleStartClick} />
           <Button name='Stop Test' onClick={handleStopClick} />
           <ResponseTimer delay={wait} callback={RTCallback} />
+          <ProgressBar 
+            duration={props.duration} 
+            start={props.testStart}/>
           </>
           );
       case 'RT-finished':

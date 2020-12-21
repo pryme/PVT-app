@@ -8,7 +8,6 @@ import DataSummary from './data_summary';
 import TestFooter from './test_footer';
 import Settings from './settings';
 import ViewData from './view_data';
-import ProgressBar from './progress_bar';
 
 function App() {
   // states of App {getUser, getTestInfo, doTest, doReview, doSettings, manageData}
@@ -101,19 +100,16 @@ function App() {
         </>
       break;
     case "doTest":
-      // TODO: ProgressBar better as part of TestManager
       mainPane = 
         <>
         <TestManager
-        duration={settings.testDuration}
-        cbRT={cbRT}
-        maxWait={settings.maxWait}
-        cbTM={cbTM}
-        setTestStart={setTestStart}
+          duration={settings.testDuration}
+          cbRT={cbRT}
+          maxWait={settings.maxWait}
+          cbTM={cbTM}
+          setTestStart={setTestStart}
+          testStart={testStart}
         />
-        <ProgressBar 
-          duration={settings.testDuration} 
-          start={testStart}/>
         </>
       break;
     case "doReview":

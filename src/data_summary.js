@@ -95,7 +95,7 @@ function DataSummary(props) {
         let testID = "T" + testNum;
         userObj.userTests[testID] = testObj;
         localStorage.setItem(key, JSON.stringify(userObj));
-        console.log(userObj);
+        //console.log(userObj);
       }
     }
   }, []); 

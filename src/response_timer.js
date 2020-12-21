@@ -34,7 +34,8 @@ function ResponseTimer(props) {
     setTimingStarted(false);  // ready for new trial
     startStop.current = [];  // ready for new trial
   }
-  const msg = <p>Stop the counter by clicking on it.</p>
+  
+  const msg = <p>Click on 'Click'</p>
   let p = <h1>_</h1>;  // TODO: can improve display with CSS
   if (timingStarted) p = <h1>Click!</h1>
   return (
